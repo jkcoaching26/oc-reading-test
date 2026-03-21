@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OC Reading Test - Sport</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #FDB515;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .question-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #8B6914;
+        }
+
+        .student-info-screen {
+            max-width: 600px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .student-info-screen h2 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #FDB515;
+        }
+
+        .start-btn {
+            width: 100%;
+            background: #FDB515;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .start-btn:hover {
+            background: #E5A315;
+        }
+
+        .main-container {
+            display: none;
+            max-width: 1400px;
+            margin: 20px auto;
+            background: white;
+            min-height: calc(100vh - 120px);
+        }
+
+        .main-container.active {
+            display: flex;
+        }
+
+        .left-panel {
+            width: 55%;
+            padding: 20px;
+            border-right: 2px solid #ddd;
+            overflow-y: auto;
+            max-height: calc(100vh - 120px);
+        }
+
+        .instructions {
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #FDB515;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab {
+            padding: 12px 30px;
+            background: #e0e0e0;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            border-radius: 5px 5px 0 0;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: #4A90E2;
+            color: white;
+        }
+
+        .tab:hover {
+            background: #5A9FE5;
+            color: white;
+        }
+
+        .extract-content {
+            display: none;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 5px;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .extract-content.active {
+            display: block;
+        }
+
+        .extract-content h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .extract-content p {
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .right-panel {
+            width: 45%;
+            padding: 20px;
+            background: #f9f9f9;
+            overflow-y: auto;
+            max-height: calc(100vh - 120px);
+        }
+
+        .questions-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .question-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 5px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .question-item:hover {
+            border-color: #FDB515;
+        }
+
+        .question-item.correct {
+            border-color: #28a745;
+            background: #f0fdf4;
+        }
+
+        .question-item.incorrect {
+            border-color: #dc3545;
+            background: #fef2f2;
+        }
+
+        .question-text {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .dropdown {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            background: white;
+        }
+
+        .dropdown:focus {
+            outline: none;
+            border-color: #FDB515;
+        }
+
+        .dropdown.correct-answer {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .dropdown.wrong-answer {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .feedback {
+            margin-top: 8px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .bottom-bar {
+            background: #FDB515;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .nav-btn {
+            background: white;
+            color: #FDB515;
+            border: none;
+            padding: 12px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .nav-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .submit-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #218838;
+        }
+
+        .submit-btn:disabled {
+            background: #adb5bd;
+            cursor: not-allowed;
+        }
+
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .results-modal.show {
+            display: flex;
+        }
+
+        .results-content {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .results-content h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+
+        .score-display {
+            font-size: 64px;
+            font-weight: bold;
+            color: #FDB515;
+            margin: 20px 0;
+        }
+
+        .results-content p {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .close-results-btn {
+            background: #FDB515;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .close-results-btn:hover {
+            background: #E5A315;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FDB515;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .left-panel, .right-panel {
+                width: 100%;
+                max-height: none;
+            }
+
+            .left-panel {
+                border-right: none;
+                border-bottom: 2px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Student Info Screen -->
+    <div class="student-info-screen" id="studentInfoScreen">
+        <h2>OC Reading Comprehension Test<br>Sport</h2>
+        <div class="input-group">
+            <label for="studentName">Your Full Name *</label>
+            <input type="text" id="studentName" placeholder="Enter your full name" required>
+        </div>
+        <div class="input-group">
+            <label for="studentEmail">Email (optional)</label>
+            <input type="email" id="studentEmail" placeholder="your.email@example.com">
+        </div>
+        <button class="start-btn" onclick="startTest()">Start Test</button>
+    </div>
+
+    <!-- Test Screen -->
+    <div>
+        <div class="header">
+            <div class="timer" id="timer">45:00<br><span style="font-size: 12px;">Mins Secs</span></div>
+            <div class="question-number">Questions 18-25</div>
+            <div></div>
+        </div>
+
+        <div class="main-container" id="mainContainer">
+            <!-- Left Panel - Extracts -->
+            <div class="left-panel">
+                <div class="instructions">
+                    <strong>Read the four extracts below on the theme of sport. For questions 18–25, choose the option (A, B, C or D) which you think best answers the question.</strong>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="showExtract(0)">Extract A</button>
+                    <button class="tab" onclick="showExtract(1)">Extract B</button>
+                    <button class="tab" onclick="showExtract(2)">Extract C</button>
+                    <button class="tab" onclick="showExtract(3)">Extract D</button>
+                </div>
+
+                <div class="extract-content active" id="extract0">
+                    <h3>Extract A</h3>
+                    <p>The ancient Olympic Games, held at Olympia in Greece every four years from at least 776 BCE, were far more than athletic competitions. They were religious ceremonies, diplomatic occasions, and a mechanism for achieving temporary peace between city-states that spent much of the rest of their time at war. Athletes competed not for money but for the olive wreath — a symbol of honour so highly prized that victors were celebrated as heroes and, in some cities, exempted from paying taxes for life. The Games were abolished by the Roman Emperor Theodosius I in 393 CE, partly on the grounds that they had become associated with pagan worship in an increasingly Christian empire.</p>
+                    <p>It was the French educator Pierre de Coubertin who argued, in the 1890s, that reviving the Olympic Games could serve a practical purpose in the modern world: he believed competitive sport between nations would encourage understanding, reduce the likelihood of conflict, and promote physical education in schools. The first modern Games were held in Athens in 1896. Within a century, the Olympics had grown from a small gathering of mainly European amateurs into a global event involving thousands of athletes from over two hundred nations, generating billions of dollars in television rights, sponsorship, and tourism revenue. Whether this transformation has fulfilled de Coubertin's original vision, or fundamentally contradicted it, remains a matter of genuine debate among historians of sport.</p>
+                </div>
+
+                <div class="extract-content" id="extract1">
+                    <h3>Extract B</h3>
+                    <p>I was eleven years old the first time I stood behind the blocks at a proper competition. The pool looked nothing like the one I trained in every morning: it was longer, brighter, and full of a silence that pressed against my ears like water already. My coach, a compact woman of very few words, appeared at my elbow without warning. 'You're going to want to think about the first fifteen metres,' she said. 'After that, your body knows what to do. Just get to fifteen metres.' I nodded as though this made sense. It did not, yet.</p>
+                    <p>The starter's signal sounded and I hit the water. For the first few strokes, my mind was entirely empty — not calm, just blank, the way a room looks before the furniture arrives. Then, somewhere around the ten-metre mark, something clicked into place: my breathing found its rhythm, my arms stopped fighting the water and started moving through it, and the rest of the race became, if not easy, then at least familiar. I touched the wall and looked up at the clock. I had not won. But my coach was nodding slowly from the poolside, which I had learned, over two years of training, was the closest she came to applause. I went back the following week, and the week after that.</p>
+                </div>
+
+                <div class="extract-content" id="extract2">
+                    <h3>Extract C</h3>
+                    <p>When the body engages in intense physical activity, its demand for energy outpaces the rate at which oxygen can be delivered to working muscles. In response, the muscles switch from aerobic respiration — which requires oxygen — to anaerobic respiration, which does not. This process generates energy rapidly but produces lactic acid as a by-product. The accumulation of lactic acid in muscle tissue is associated with the burning sensation athletes commonly experience during maximal effort, and with the temporary reduction in muscular force that follows. The point at which the body begins to rely significantly on anaerobic respiration is known among exercise physiologists as the 'lactate threshold'.</p>
+                    <p>An athlete's capacity for sustained high-intensity effort is also determined by their maximum oxygen uptake, referred to in sports science as 'VO₂ max': the greatest volume of oxygen the body can consume per minute during exercise. VO₂ max is partly genetic but can be improved through targeted training. At the muscular level, performance is further shaped by the ratio of 'fast-twitch' to 'slow-twitch' muscle fibres — terms used by exercise scientists to distinguish between fibres optimised for explosive short-duration efforts and those suited to endurance activity. Elite sprinters tend to have a higher proportion of fast-twitch fibres, while distance runners typically show the reverse pattern. Coaches and sports scientists use this understanding to design training programmes that target the specific physiological demands of each event.</p>
+                </div>
+
+                <div class="extract-content" id="extract3">
+                    <h3>Extract D</h3>
+                    <p>The use of performance-enhancing substances in competitive sport is governed in Australia by the National Anti-Doping Scheme, administered by the Australian Sports Anti-Doping Authority, commonly known as ASADA. Under this scheme, athletes competing at national and international level are subject to testing both in and out of competition, and are required to comply with the World Anti-Doping Agency's Prohibited List, which is updated annually. An athlete who tests positive for a prohibited substance, or who is found to have evaded testing, may face a period of ineligibility ranging from a reprimand to a lifetime ban, depending on the substance involved and the circumstances of the case.</p>
+                    <p>The rationale behind anti-doping regulation is not only to protect the health of individual athletes but to preserve what regulators describe as the 'spirit of sport': the principle that competition should reflect natural human ability, dedication, and training rather than access to chemical advantage. Critics of the current framework argue that enforcement is inconsistent across different sports and national systems, and that the burden of proof placed on athletes to demonstrate innocence — rather than on authorities to prove intent — creates a system that can produce unjust outcomes. Several high-profile cases in recent years have prompted calls for an independent review of how sanctions are determined and applied.</p>
+                </div>
+            </div>
+
+            <!-- Right Panel - Questions -->
+            <div class="right-panel">
+                <div class="questions-header">
+                    Which extract...
+                </div>
+
+                <div class="question-item" data-question="18" data-answer="C">
+                    <div class="question-text">18. describes what happens in the body during intense physical effort?</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Extract A</option>
+                        <option value="B">Extract B</option>
+                        <option value="C">Extract C</option>
+                        <option value="D">Extract D</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="19" data-answer="B">
+                    <div class="question-text">19. describes a writer's vivid personal memory connected to competing in sport?</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Extract A</option>
+                        <option value="B">Extract B</option>
+                        <option value="C">Extract C</option>
+                        <option value="D">Extract D</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="20" data-answer="B">
+                    <div class="question-text">20. uses figurative language to describe a physical experience of sport?</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Extract A</option>
+                        <option value="B">Extract B</option>
+                        <option value="C">Extract C</option>
+                        <option value="D">Extract D</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="21" data-answer="A">
+                    <div class="question-text">21. explains why a major sporting event was restarted after a long period without it?</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Extract A</option>
+                        <option value="B">Extract B</option>
+                        <option value="C">Extract C</option>
+                        <option value="D">Extract D</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="22" data-answer="C">
+                    <div class="question-text">22. mentions specific terms used by people who study sport and exercise professionally?</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Extract A</option>
+                        <option value="B">Extract B</option>
+                        <option value="C">Extract C</option>
+                        <option value="D">Extract D</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="23" data-answer="A">
+                    <div class="question-text">23. gives evidence that sport has had a significant effect beyond the playing field?</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Extract A</option>
+                        <option value="B">Extract B</option>
+                        <option value="C">Extract C</option>
+                        <option value="D">Extract D</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="24" data-answer="B">
+                    <div class="question-text">24. describes someone being given specific advice about how to approach a sporting challenge?</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Extract A</option>
+                        <option value="B">Extract B</option>
+                        <option value="C">Extract C</option>
+                        <option value="D">Extract D</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="25" data-answer="D">
+                    <div class="question-text">25. refers to regulations that exist to maintain fairness in sport?</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Extract A</option>
+                        <option value="B">Extract B</option>
+                        <option value="C">Extract C</option>
+                        <option value="D">Extract D</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Submitting your answers...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-bar">
+            <button class="nav-btn">Back</button>
+            <button class="submit-btn" id="submitBtn" onclick="submitTest()">Submit Answers</button>
+            <button class="nav-btn">Next</button>
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div class="results-modal" id="resultsModal">
+        <div class="results-content">
+            <h2>Test Complete!</h2>
+            <div class="score-display" id="scoreDisplay"></div>
+            <p id="scoreMessage"></p>
+            <p id="detailMessage"></p>
+            <p style="margin-top: 20px; font-size: 14px;">Your results have been recorded.</p>
+            <button class="close-results-btn" onclick="closeResults()">View Results</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedAnswers = {};
+        let submitted = false;
+        let studentName = '';
+        let studentEmail = '';
+        let timerInterval;
+
+        // Google Apps Script URL - REPLACE THIS
+        const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+
+        function startTest() {
+            const nameInput = document.getElementById('studentName');
+            studentName = nameInput.value.trim();
+            studentEmail = document.getElementById('studentEmail').value.trim();
+
+            if (!studentName) {
+                alert('Please enter your name to start the test.');
+                return;
+            }
+
+            document.getElementById('studentInfoScreen').style.display = 'none';
+            document.getElementById('mainContainer').classList.add('active');
+            
+            startTimer();
+        }
+
+        function startTimer() {
+            let minutes = 45;
+            let seconds = 0;
+
+            timerInterval = setInterval(() => {
+                if (seconds === 0) {
+                    if (minutes === 0) {
+                        clearInterval(timerInterval);
+                        alert('Time is up!');
+                        return;
+                    }
+                    minutes--;
+                    seconds = 59;
+                } else {
+                    seconds--;
+                }
+
+                const timerDisplay = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                document.getElementById('timer').innerHTML = `${timerDisplay}<br><span style="font-size: 12px;">Mins Secs</span>`;
+            }, 1000);
+        }
+
+        function showExtract(index) {
+            document.querySelectorAll('.extract-content').forEach(extract => {
+                extract.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.getElementById('extract' + index).classList.add('active');
+            document.querySelectorAll('.tab')[index].classList.add('active');
+        }
+
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            dropdown.addEventListener('change', function() {
+                if (submitted) return;
+
+                const questionItem = this.closest('.question-item');
+                const questionNum = questionItem.dataset.question;
+                const selectedOption = this.value;
+
+                if (selectedOption) {
+                    selectedAnswers[questionNum] = selectedOption;
+                }
+
+                if (Object.keys(selectedAnswers).length === 8) {
+                    document.getElementById('submitBtn').disabled = false;
+                }
+            });
+        });
+
+        async function submitTest() {
+            if (Object.keys(selectedAnswers).length !== 8) {
+                alert('Please answer all questions before submitting.');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to submit your answers?')) {
+                return;
+            }
+
+            clearInterval(timerInterval);
+            submitted = true;
+            let correctCount = 0;
+            let detailedAnswers = {};
+
+            document.querySelectorAll('.question-item').forEach(item => {
+                const questionNum = item.dataset.question;
+                const correctAnswer = item.dataset.answer;
+                const userAnswer = selectedAnswers[questionNum];
+                const dropdown = item.querySelector('.dropdown');
+                const feedback = item.querySelector('.feedback');
+
+                detailedAnswers[`Q${questionNum}`] = userAnswer;
+                detailedAnswers[`Q${questionNum}_Correct`] = correctAnswer;
+                detailedAnswers[`Q${questionNum}_IsCorrect`] = userAnswer === correctAnswer ? 'Yes' : 'No';
+
+                dropdown.disabled = true;
+
+                if (userAnswer === correctAnswer) {
+                    correctCount++;
+                    item.classList.add('correct');
+                    dropdown.classList.add('correct-answer');
+                    feedback.textContent = '✓ Correct!';
+                    feedback.classList.add('correct', 'show');
+                } else {
+                    item.classList.add('incorrect');
+                    dropdown.classList.add('wrong-answer');
+                    feedback.textContent = `✗ Incorrect. The correct answer is Extract ${correctAnswer}.`;
+                    feedback.classList.add('incorrect', 'show');
+                }
+            });
+
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('loading').classList.add('show');
+
+            const submissionData = {
+                timestamp: new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney' }),
+                studentName: studentName,
+                studentEmail: studentEmail || 'Not provided',
+                testTheme: 'Sport',
+                score: correctCount,
+                totalQuestions: 8,
+                percentage: Math.round((correctCount / 8) * 100),
+                ...detailedAnswers
+            };
+
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(submissionData)
+                });
+            } catch (error) {
+                console.error('Error submitting results:', error);
+            }
+
+            setTimeout(() => {
+                document.getElementById('loading').classList.remove('show');
+
+                const percentage = (correctCount / 8 * 100).toFixed(0);
+                document.getElementById('scoreDisplay').textContent = `${correctCount}/8`;
+                document.getElementById('scoreMessage').textContent = `You scored ${percentage}%`;
+
+                if (correctCount === 8) {
+                    document.getElementById('detailMessage').textContent = 'Perfect score! Excellent work! 🌟';
+                } else if (correctCount >= 6) {
+                    document.getElementById('detailMessage').textContent = 'Great job! You did very well! 👏';
+                } else if (correctCount >= 4) {
+                    document.getElementById('detailMessage').textContent = 'Good effort! Keep practicing! 💪';
+                } else {
+                    document.getElementById('detailMessage').textContent = 'Keep working at it! Review the extracts and try again! 📚';
+                }
+
+                document.getElementById('resultsModal').classList.add('show');
+            }, 1500);
+        }
+
+        function closeResults() {
+            document.getElementById('resultsModal').classList.remove('show');
+        }
+
+        document.getElementById('submitBtn').disabled = true;
+    </script>
+</body>
+</html>
