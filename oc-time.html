@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OC Reading Test - Time</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        
+        .header {
+            background: #002855;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo { height: 40px; }
+        .timer { font-size: 24px; font-weight: bold; }
+        .question-num { font-size: 24px; font-weight: bold; }
+        
+        .main-container {
+            max-width: 1400px;
+            margin: 20px auto;
+            background: white;
+            min-height: calc(100vh - 160px);
+            display: flex;
+        }
+        
+        .left-panel {
+            width: 55%;
+            padding: 20px;
+            border-right: 2px solid #ddd;
+            overflow-y: auto;
+            max-height: calc(100vh - 160px);
+        }
+        
+        .instructions {
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #002855;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .tab {
+            padding: 12px 30px;
+            background: #e0e0e0;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .tab.active {
+            background: #4A90E2;
+            color: white;
+        }
+        
+        .extract-content {
+            display: none;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 5px;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        
+        .extract-content.active { display: block; }
+        .extract-content p { margin-bottom: 15px; }
+        
+        .right-panel {
+            width: 45%;
+            padding: 20px;
+            background: #f9f9f9;
+            overflow-y: auto;
+            max-height: calc(100vh - 160px);
+        }
+        
+        .questions-header {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .question-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 5px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .question-item.correct {
+            border-color: #28a745;
+            background: #f0fdf4;
+        }
+        
+        .question-item.incorrect {
+            border-color: #dc3545;
+            background: #fef2f2;
+        }
+        
+        .question-text {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        .dropdown {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .dropdown.correct-answer {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .dropdown.wrong-answer {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .feedback {
+            margin-top: 8px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            display: none;
+        }
+        
+        .feedback.show { display: block; }
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .bottom-bar {
+            background: #002855;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+        
+        .nav-btn, .submit-btn {
+            background: white;
+            color: #002855;
+            border: none;
+            padding: 12px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .submit-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        .submit-btn:disabled {
+            background: #adb5bd;
+            cursor: not-allowed;
+        }
+        
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .results-modal.show { display: flex; }
+        
+        .results-content {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        .score-display {
+            font-size: 64px;
+            font-weight: bold;
+            color: #002855;
+            margin: 20px 0;
+        }
+        
+        .close-btn {
+            background: #002855;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="timer" id="timer">11:30</div>
+        <div class="question-num">Questions 18-25</div>
+        <svg width="150" height="35" viewBox="0 0 300 70">
+            <path d="M 10 5 L 30 5 L 30 40 Q 30 52 20 52 Q 10 52 10 40 Z" fill="white"/>
+            <text x="13" y="38" font-family="Arial" font-size="28" font-weight="bold" fill="#002855">JK</text>
+            <text x="45" y="30" font-family="Arial" font-size="20" font-weight="bold" fill="white">JK COACHING</text>
+            <text x="45" y="50" font-family="Arial" font-size="20" font-weight="bold" fill="white">COLLEGE</text>
+        </svg>
+    </div>
+
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="instructions">
+                <strong>Read the four extracts below on the theme of time. For questions 18–25, choose the option (A, B, C or D) which you think best answers the question.</strong>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showExtract(0)">Extract A</button>
+                <button class="tab" onclick="showExtract(1)">Extract B</button>
+                <button class="tab" onclick="showExtract(2)">Extract C</button>
+                <button class="tab" onclick="showExtract(3)">Extract D</button>
+            </div>
+
+            <div class="extract-content active" id="extract0">
+                <h3>Extract A</h3>
+                <p>For most of human history, time was a local matter. Communities measured the day by the position of the sun, which meant that noon in one town might differ by several minutes from noon in the next. This presented no practical difficulty when the furthest most people ever travelled was the nearest market. The arrival of the railway changed everything. A train timetable that listed departures and arrivals according to local time became useless — and dangerous — once a single line connected towns whose clocks disagreed by twenty or thirty minutes. It was the railways, more than any other institution, that forced the adoption of standardised time across entire regions.</p>
+                <p>The standardisation of time had consequences that extended well beyond the management of train schedules. Once time was fixed and uniform, it became possible to coordinate economic activity, military operations, and scientific observation across vast distances in ways that had previously been impossible. The establishment of Greenwich Mean Time as the international reference point in 1884 gave the world a single temporal anchor from which all other time zones were calculated. Historians of technology argue that this seemingly technical decision — agreeing on a shared moment called 'now' — was among the most consequential acts of international coordination in modern history, quietly underpinning the rise of global commerce, communications, and eventually the internet.</p>
+            </div>
+
+            <div class="extract-content" id="extract1">
+                <h3>Extract B</h3>
+                <p>In the months after my father died, time stopped behaving in the way I had always understood it to. Days that contained very little — a walk, a meal, a phone call that went to voicemail — lasted longer than weeks I could recall from years before. Evenings were the worst. Between six and nine o'clock each night, time moved the way cold honey moves: not stopped, but resistant, thickening around every hour until I felt I was pushing against it rather than passing through it.</p>
+                <p>My aunt, who had lost her husband some years earlier, came to stay for a while. She did not offer comfort in the way I had expected — she did not say it would get easier or that time would heal anything. Instead, she told me to find one thing each day that required my full attention: a recipe I had never made, a walk on a route I had never taken, a conversation I had been putting off. 'The trouble with grief,' she said, 'is that it gives you too much of yourself. You need to be borrowed back out.' It was not a cure. But it was something to do with the hours, and that turned out to be enough.</p>
+            </div>
+
+            <div class="extract-content" id="extract2">
+                <h3>Extract C</h3>
+                <p>Every living organism on Earth keeps time. The internal mechanism by which the body regulates its own daily rhythms is known as the circadian clock — from the Latin circa diem, meaning 'approximately one day.' In humans, this clock is controlled primarily by a cluster of nerve cells in the hypothalamus called the suprachiasmatic nucleus, or SCN, which receives information about light levels from the retina and uses this to synchronise the body's physiological processes with the external day-night cycle. The SCN regulates the release of melatonin, a hormone produced by the pineal gland that promotes sleep, with production rising in the evening and suppressed by exposure to bright light.</p>
+                <p>Researchers in the field of chronobiology — the scientific study of biological time — use the term 'zeitgeber', from the German for 'time-giver', to describe any external cue that helps reset the circadian clock. Light is the most powerful zeitgeber, but others include temperature, meal timing, and social interaction. When the circadian clock is disrupted — as occurs in jet lag, shift work, or exposure to artificial light at night — the body's internal processes fall out of synchronisation with the external environment, a state researchers describe as 'circadian misalignment.' Chronic circadian misalignment has been associated with increased risk of metabolic disorders, cardiovascular disease, and mood disturbance.</p>
+            </div>
+
+            <div class="extract-content" id="extract3">
+                <h3>Extract D</h3>
+                <p>Daylight saving time — the practice of advancing clocks by one hour during the warmer months to shift an hour of daylight from the morning to the evening — is observed in parts of Australia under state and territory legislation rather than a single national law. New South Wales, Victoria, South Australia, Tasmania, and the Australian Capital Territory all observe daylight saving time, while Queensland, Western Australia, and the Northern Territory do not. This patchwork arrangement has created ongoing practical difficulties for businesses, broadcasters, and transport operators working across state boundaries, and has been the subject of repeated but unsuccessful attempts at national harmonisation.</p>
+                <p>The arguments for and against daylight saving time have changed little since the practice was first widely adopted in the early twentieth century. Proponents argue that it reduces energy consumption by aligning waking hours more closely with available daylight, extends opportunities for outdoor activity after the working day, and benefits industries such as retail, tourism, and sport. Opponents argue that the disruption to sleep patterns in the days following the clock change carries measurable health costs, that the claimed energy savings have diminished as lighting has become more efficient, and that the economic benefit to evening industries comes at a direct cost to those that depend on early morning activity, including agriculture and early childhood services.</p>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="questions-header">Which extract...</div>
+
+            <div class="question-item" data-question="18" data-answer="A">
+                <div class="question-text">18. explains why a shared way of measuring time became necessary?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="19" data-answer="B">
+                <div class="question-text">19. describes a writer for whom time seemed to pass unusually slowly?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="20" data-answer="C">
+                <div class="question-text">20. describes how the body keeps time without any conscious effort?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="21" data-answer="A">
+                <div class="question-text">21. gives evidence that the measurement of time has had far-reaching effects on society?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="22" data-answer="C">
+                <div class="question-text">22. mentions specific terms used by scientists who study biological time?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="23" data-answer="B">
+                <div class="question-text">23. uses figurative language to describe the passing of time?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="24" data-answer="D">
+                <div class="question-text">24. refers to legislation that changes the official time observed within a region?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="25" data-answer="B">
+                <div class="question-text">25. describes a writer receiving advice about how to endure a period of difficulty?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <button class="nav-btn" onclick="goBack()">Back</button>
+        <button class="submit-btn" id="submitBtn" onclick="submitTest()">Submit Answers</button>
+        <button class="nav-btn">Next</button>
+    </div>
+
+    <div class="results-modal" id="resultsModal">
+        <div class="results-content">
+            <h2>Test Complete!</h2>
+            <div class="score-display" id="scoreDisplay"></div>
+            <p id="scoreMessage"></p>
+            <p style="margin-top: 20px; font-size: 14px;">Your results have been saved.</p>
+            <button class="close-btn" onclick="goBack()">Return to Main Menu</button>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+        let selectedAnswers = {};
+        let submitted = false;
+        let timerInterval;
+
+        const studentName = sessionStorage.getItem('studentName') || 'Unknown';
+        const studentEmail = sessionStorage.getItem('studentEmail') || '';
+
+        function startTimer() {
+            let minutes = 11;
+            let seconds = 30;
+
+            timerInterval = setInterval(() => {
+                if (seconds === 0) {
+                    if (minutes === 0) {
+                        clearInterval(timerInterval);
+                        alert('Time is up!');
+                        submitTest();
+                        return;
+                    }
+                    minutes--;
+                    seconds = 59;
+                } else {
+                    seconds--;
+                }
+
+                document.getElementById('timer').textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function showExtract(index) {
+            document.querySelectorAll('.extract-content').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('extract' + index).classList.add('active');
+            document.querySelectorAll('.tab')[index].classList.add('active');
+        }
+
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            dropdown.addEventListener('change', function() {
+                if (submitted) return;
+                const questionItem = this.closest('.question-item');
+                const questionNum = questionItem.dataset.question;
+                const selectedOption = this.value;
+
+                if (selectedOption) {
+                    selectedAnswers[questionNum] = selectedOption;
+                }
+
+                if (Object.keys(selectedAnswers).length === 8) {
+                    document.getElementById('submitBtn').disabled = false;
+                }
+            });
+        });
+
+        async function submitTest() {
+            if (Object.keys(selectedAnswers).length !== 8) {
+                alert('Please answer all questions before submitting.');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to submit?')) return;
+
+            clearInterval(timerInterval);
+            submitted = true;
+            let correctCount = 0;
+
+            document.querySelectorAll('.question-item').forEach(item => {
+                const questionNum = item.dataset.question;
+                const correctAnswer = item.dataset.answer;
+                const userAnswer = selectedAnswers[questionNum];
+                const dropdown = item.querySelector('.dropdown');
+                const feedback = item.querySelector('.feedback');
+
+                dropdown.disabled = true;
+
+                if (userAnswer === correctAnswer) {
+                    correctCount++;
+                    item.classList.add('correct');
+                    dropdown.classList.add('correct-answer');
+                    feedback.textContent = '✓ Correct';
+                    feedback.classList.add('correct', 'show');
+                } else {
+                    item.classList.add('incorrect');
+                    dropdown.classList.add('wrong-answer');
+                    feedback.textContent = '✗ Incorrect';
+                    feedback.classList.add('incorrect', 'show');
+                }
+            });
+
+            document.getElementById('submitBtn').disabled = true;
+
+            const submissionData = {
+                timestamp: new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney' }),
+                studentName: studentName,
+                studentEmail: studentEmail,
+                testType: 'OC',
+                testName: 'Time',
+                score: correctCount,
+                totalQuestions: 8,
+                percentage: Math.round((correctCount / 8) * 100),
+                Q18: selectedAnswers['18'], Q18_Correct: 'A',
+                Q19: selectedAnswers['19'], Q19_Correct: 'B',
+                Q20: selectedAnswers['20'], Q20_Correct: 'C',
+                Q21: selectedAnswers['21'], Q21_Correct: 'A',
+                Q22: selectedAnswers['22'], Q22_Correct: 'C',
+                Q23: selectedAnswers['23'], Q23_Correct: 'B',
+                Q24: selectedAnswers['24'], Q24_Correct: 'D',
+                Q25: selectedAnswers['25'], Q25_Correct: 'B'
+            };
+
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(submissionData)
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+
+            document.getElementById('scoreDisplay').textContent = `${correctCount}/8`;
+            document.getElementById('scoreMessage').textContent = `You scored ${Math.round((correctCount/8)*100)}%`;
+            document.getElementById('resultsModal').classList.add('show');
+        }
+
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('submitBtn').disabled = true;
+        startTimer();
+    </script>
+</body>
+</html>

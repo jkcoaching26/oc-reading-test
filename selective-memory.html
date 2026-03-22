@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selective Reading Test - Memory</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        
+        .header {
+            background: #002855;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .timer { font-size: 24px; font-weight: bold; }
+        .question-num { font-size: 24px; font-weight: bold; }
+        
+        .main-container {
+            max-width: 1400px;
+            margin: 20px auto;
+            background: white;
+            min-height: calc(100vh - 160px);
+            display: flex;
+        }
+        
+        .left-panel {
+            width: 55%;
+            padding: 20px;
+            border-right: 2px solid #ddd;
+            overflow-y: auto;
+            max-height: calc(100vh - 160px);
+        }
+        
+        .instructions {
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #002855;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .tab {
+            padding: 12px 30px;
+            background: #e0e0e0;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .tab.active {
+            background: #4A90E2;
+            color: white;
+        }
+        
+        .extract-content {
+            display: none;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 5px;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        
+        .extract-content.active { display: block; }
+        .extract-content p { margin-bottom: 15px; }
+        
+        .right-panel {
+            width: 45%;
+            padding: 20px;
+            background: #f9f9f9;
+            overflow-y: auto;
+            max-height: calc(100vh - 160px);
+        }
+        
+        .questions-header {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .question-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 5px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .question-item.correct {
+            border-color: #28a745;
+            background: #f0fdf4;
+        }
+        
+        .question-item.incorrect {
+            border-color: #dc3545;
+            background: #fef2f2;
+        }
+        
+        .question-text {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        .dropdown {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .dropdown.correct-answer {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .dropdown.wrong-answer {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .feedback {
+            margin-top: 8px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            display: none;
+        }
+        
+        .feedback.show { display: block; }
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .bottom-bar {
+            background: #002855;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+        
+        .nav-btn, .submit-btn {
+            background: white;
+            color: #002855;
+            border: none;
+            padding: 12px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .submit-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        .submit-btn:disabled {
+            background: #adb5bd;
+            cursor: not-allowed;
+        }
+        
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .results-modal.show { display: flex; }
+        
+        .results-content {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        .score-display {
+            font-size: 64px;
+            font-weight: bold;
+            color: #002855;
+            margin: 20px 0;
+        }
+        
+        .close-btn {
+            background: #002855;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="timer" id="timer">12:30</div>
+        <div class="question-num">Questions 21-30</div>
+        <svg width="150" height="35" viewBox="0 0 300 70">
+            <path d="M 10 5 L 30 5 L 30 40 Q 30 52 20 52 Q 10 52 10 40 Z" fill="white"/>
+            <text x="13" y="38" font-family="Arial" font-size="28" font-weight="bold" fill="#002855">JK</text>
+            <text x="45" y="30" font-family="Arial" font-size="20" font-weight="bold" fill="white">JK COACHING</text>
+            <text x="45" y="50" font-family="Arial" font-size="20" font-weight="bold" fill="white">COLLEGE</text>
+        </svg>
+    </div>
+
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="instructions">
+                <strong>Read the four extracts below on the theme of memory. For questions 21–30, choose the option (A, B, C or D) which you think best answers the question.</strong>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showExtract(0)">Extract A</button>
+                <button class="tab" onclick="showExtract(1)">Extract B</button>
+                <button class="tab" onclick="showExtract(2)">Extract C</button>
+                <button class="tab" onclick="showExtract(3)">Extract D</button>
+            </div>
+
+            <div class="extract-content active" id="extract0">
+                <h3>Extract A</h3>
+                <p>The house was smaller than I remembered. That was the first thing — not the peeling paint, not the unfamiliar car in the driveway, but the shrinking of it. I had carried this house for thirty years in a particular size, and standing at the gate I could see clearly that I had been wrong. The oak tree, which I had thought enormous, came up to my shoulder. The garden, which I had imagined as vast and half-wild, was a tidy square I could cross in seven paces.</p>
+                <p>I had expected something to shift inside me when I came back. Some unlocking, perhaps — a sense of the past moving through the present. What I felt instead was a quiet bewilderment. The memories were still there, vivid and warm, but they no longer matched anything in front of me. I began to wonder whether I had been remembering the house at all, or simply remembering the feeling of being small inside it, and had confused the two.</p>
+                <p>I took a photograph before I left, though I am not sure why. It seemed important to have evidence of the actual place — as though without it, the house in my memory would quietly expand again, filling itself back out to the size it had always been.</p>
+            </div>
+
+            <div class="extract-content" id="extract1">
+                <h3>Extract B</h3>
+                <p>Memory, neuroscientists now tell us, is not a recording. It is a performance. Every time you remember something, you are not retrieving a fixed file from a cabinet — you are reconstructing an event from scattered fragments, filling in gaps, adjusting details, and storing the result back as if it were the original. The act of remembering, in other words, is also the act of rewriting.</p>
+                <p>This process is known as memory reconsolidation, and its implications are quietly unsettling. Researchers have shown that a memory can be altered simply by the act of recalling it: emotions present at the moment of retrieval, new information encountered since the original event, even the questions a person is asked while remembering — all of these can leave traces on the memory that persist as if they were always there. The memory you have of your seventh birthday is not the birthday itself. It is an accumulation of every time you have thought about it since.</p>
+                <p>The brain does not store memories the way a camera stores images. Instead, individual elements — a face, a sound, a smell — are held in different regions and reassembled on demand. This makes memory flexible and efficient. It also makes it surprisingly easy to revise.</p>
+            </div>
+
+            <div class="extract-content" id="extract2">
+                <h3>Extract C</h3>
+                <p>There is a particular kind of gift shop that appears near any place of historical significance: shelves of replica tin signs, sepia postcards, and small stone cottages pressed in resin. Visitors move through them slowly, picking things up, turning them over. Something in the arrangement seems designed to produce a feeling — a warmth, a sense of connection, the comfortable weight of the past.</p>
+                <p>What is actually being sold, of course, is not the past but an idea of it. The nostalgia industry — and it is an industry, generating billions of dollars annually through heritage tourism, retro branding, and reunion culture — does not deal in actual memory. It deals in the emotion memory produces, carefully packaged and offered back at a small premium. The past, in this market, is not something that happened to you. It is something you can purchase.</p>
+                <p>None of this is to say that shared memory serves no purpose. Communities that have been through something together — a loss, a celebration, a period of hardship — often find that remembering together is genuinely binding. But there is a difference between that kind of memory and a branded experience of heritage, even if the feelings produced are, from the outside, almost identical.</p>
+            </div>
+
+            <div class="extract-content" id="extract3">
+                <h3>Extract D</h3>
+                <p>The French sociologist Maurice Halbwachs argued in the 1920s that memory is never truly individual. We remember, he suggested, within frameworks provided by the groups we belong to — families, communities, nations — and it is these frameworks that determine not only how we interpret the past, but which parts of it we can access at all. Remove a person from the group, and certain memories become unreachable. Return them, and those memories reappear.</p>
+                <p>Modern research has largely supported this view. Studies show that the stories a community tells about itself — through rituals, monuments, anniversaries, and shared narratives — actively shape what individuals within that community remember about their own lives. Groups do not merely commemorate the past; they construct it. And in doing so, they also determine what is allowed to be forgotten.</p>
+                <p>This has a curious implication for how we think about personal memory. Even the experiences we think of as most private — a childhood moment, a private grief — are remembered in language learned from others, interpreted through frameworks passed down by the groups we belong to, and sustained, often, by the act of telling them to someone else. Memory, on this account, is never entirely something we carry alone.</p>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="questions-header">Which writer...</div>
+
+            <div class="question-item" data-question="21" data-answer="A">
+                <div class="question-text">21. describes the gap between what she remembered and what she actually found?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="22" data-answer="B">
+                <div class="question-text">22. explains that the act of recalling a memory also changes it?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="23" data-answer="C">
+                <div class="question-text">23. argues that a whole industry profits from giving people a false sense of connection to the past?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="24" data-answer="D">
+                <div class="question-text">24. suggests that what we remember is shaped by the people around us?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="25" data-answer="A">
+                <div class="question-text">25. describes finding that what they had kept in mind no longer matched what was really there?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="26" data-answer="C">
+                <div class="question-text">26. suggests that an emotion connected to the past has been turned into a commercial product?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="27" data-answer="B">
+                <div class="question-text">27. explains that memories are not stored as a single complete record?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="28" data-answer="D">
+                <div class="question-text">28. explains that groups, not individuals, decide which memories are worth keeping?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="29" data-answer="C">
+                <div class="question-text">29. acknowledges that shared memory can serve a genuine purpose, even while questioning how it is used?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="30" data-answer="D">
+                <div class="question-text">30. suggests that memory is never entirely a private experience?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <button class="nav-btn" onclick="goBack()">Back</button>
+        <button class="submit-btn" id="submitBtn" onclick="submitTest()">Submit Answers</button>
+        <button class="nav-btn">Next</button>
+    </div>
+
+    <div class="results-modal" id="resultsModal">
+        <div class="results-content">
+            <h2>Test Complete!</h2>
+            <div class="score-display" id="scoreDisplay"></div>
+            <p id="scoreMessage"></p>
+            <p style="margin-top: 20px; font-size: 14px;">Your results have been saved.</p>
+            <button class="close-btn" onclick="goBack()">Return to Main Menu</button>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+        let selectedAnswers = {};
+        let submitted = false;
+        let timerInterval;
+
+        const studentName = sessionStorage.getItem('studentName') || 'Unknown';
+        const studentEmail = sessionStorage.getItem('studentEmail') || '';
+
+        function startTimer() {
+            let minutes = 12;
+            let seconds = 30;
+
+            timerInterval = setInterval(() => {
+                if (seconds === 0) {
+                    if (minutes === 0) {
+                        clearInterval(timerInterval);
+                        alert('Time is up!');
+                        submitTest();
+                        return;
+                    }
+                    minutes--;
+                    seconds = 59;
+                } else {
+                    seconds--;
+                }
+
+                document.getElementById('timer').textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function showExtract(index) {
+            document.querySelectorAll('.extract-content').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('extract' + index).classList.add('active');
+            document.querySelectorAll('.tab')[index].classList.add('active');
+        }
+
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            dropdown.addEventListener('change', function() {
+                if (submitted) return;
+                const questionItem = this.closest('.question-item');
+                const questionNum = questionItem.dataset.question;
+                const selectedOption = this.value;
+
+                if (selectedOption) {
+                    selectedAnswers[questionNum] = selectedOption;
+                }
+
+                if (Object.keys(selectedAnswers).length === 10) {
+                    document.getElementById('submitBtn').disabled = false;
+                }
+            });
+        });
+
+        async function submitTest() {
+            if (Object.keys(selectedAnswers).length !== 10) {
+                alert('Please answer all questions before submitting.');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to submit?')) return;
+
+            clearInterval(timerInterval);
+            submitted = true;
+            let correctCount = 0;
+
+            document.querySelectorAll('.question-item').forEach(item => {
+                const questionNum = item.dataset.question;
+                const correctAnswer = item.dataset.answer;
+                const userAnswer = selectedAnswers[questionNum];
+                const dropdown = item.querySelector('.dropdown');
+                const feedback = item.querySelector('.feedback');
+
+                dropdown.disabled = true;
+
+                if (userAnswer === correctAnswer) {
+                    correctCount++;
+                    item.classList.add('correct');
+                    dropdown.classList.add('correct-answer');
+                    feedback.textContent = '✓ Correct';
+                    feedback.classList.add('correct', 'show');
+                } else {
+                    item.classList.add('incorrect');
+                    dropdown.classList.add('wrong-answer');
+                    feedback.textContent = '✗ Incorrect';
+                    feedback.classList.add('incorrect', 'show');
+                }
+            });
+
+            document.getElementById('submitBtn').disabled = true;
+
+            const submissionData = {
+                timestamp: new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney' }),
+                studentName: studentName,
+                studentEmail: studentEmail,
+                testType: 'Selective',
+                testName: 'Memory',
+                score: correctCount,
+                totalQuestions: 10,
+                percentage: Math.round((correctCount / 10) * 100),
+                Q21: selectedAnswers['21'], Q21_Correct: 'A',
+                Q22: selectedAnswers['22'], Q22_Correct: 'B',
+                Q23: selectedAnswers['23'], Q23_Correct: 'C',
+                Q24: selectedAnswers['24'], Q24_Correct: 'D',
+                Q25: selectedAnswers['25'], Q25_Correct: 'A',
+                Q26: selectedAnswers['26'], Q26_Correct: 'C',
+                Q27: selectedAnswers['27'], Q27_Correct: 'B',
+                Q28: selectedAnswers['28'], Q28_Correct: 'D',
+                Q29: selectedAnswers['29'], Q29_Correct: 'C',
+                Q30: selectedAnswers['30'], Q30_Correct: 'D'
+            };
+
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(submissionData)
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+
+            document.getElementById('scoreDisplay').textContent = `${correctCount}/10`;
+            document.getElementById('scoreMessage').textContent = `You scored ${Math.round((correctCount/10)*100)}%`;
+            document.getElementById('resultsModal').classList.add('show');
+        }
+
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('submitBtn').disabled = true;
+        startTimer();
+    </script>
+</body>
+</html>
