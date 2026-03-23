@@ -5,214 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JK Coaching College - Reading Tests</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 900px;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .header {
-            background: #002855;
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .logo {
-            max-width: 300px;
-            margin: 0 auto 20px;
-        }
-
-        .header h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            font-size: 18px;
-            opacity: 0.9;
-        }
-
-        .content {
-            padding: 50px 30px;
-        }
-
-        .student-info {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 40px;
-        }
-
-        .student-info h2 {
-            color: #002855;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-group label {
-            display: block;
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 15px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-
-        .input-group input:focus {
-            outline: none;
-            border-color: #002855;
-        }
-
-        .test-selection {
-            margin-top: 40px;
-        }
-
-        .test-selection h2 {
-            color: #002855;
-            margin-bottom: 30px;
-            font-size: 24px;
-            text-align: center;
-        }
-
-        .test-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .test-category {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 30px;
-            border: 3px solid #e0e0e0;
-            transition: all 0.3s;
-        }
-
-        .test-category:hover {
-            border-color: #002855;
-            box-shadow: 0 5px 20px rgba(0,40,85,0.1);
-        }
-
-        .test-category h3 {
-            color: #002855;
-            font-size: 24px;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .test-category p {
-            color: #666;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
-        .test-btn {
-            display: block;
-            background: white;
-            color: #002855;
-            border: 2px solid #002855;
-            padding: 15px;
-            border-radius: 8px;
-            text-decoration: none;
-            text-align: center;
-            font-weight: 600;
-            font-size: 16px;
-            margin-bottom: 15px;
-            transition: all 0.3s;
-        }
-
-        .test-btn:hover {
-            background: #002855;
-            color: white;
-        }
-
-        .test-btn:last-child {
-            margin-bottom: 0;
-        }
-
-        .timer-info {
-            background: #e3f2fd;
-            padding: 8px 12px;
-            border-radius: 5px;
-            font-size: 12px;
-            color: #002855;
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        .error-message {
-            color: #dc3545;
-            font-size: 14px;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .error-message.show {
-            display: block;
-        }
-
-        @media (max-width: 768px) {
-            .test-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .header h1 {
-                font-size: 24px;
-            }
-
-            .content {
-                padding: 30px 20px;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .container { background: white; border-radius: 15px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 900px; width: 100%; overflow: hidden; }
+        .header { background: #002855; color: white; padding: 30px; text-align: center; }
+        .logo { max-width: 300px; margin: 0 auto 20px; }
+        .header h1 { font-size: 32px; margin-bottom: 10px; }
+        .header p { font-size: 18px; opacity: 0.9; }
+        .content { padding: 50px 30px; }
+        .student-info { background: #f8f9fa; padding: 30px; border-radius: 10px; margin-bottom: 40px; }
+        .student-info h2 { color: #002855; margin-bottom: 20px; font-size: 24px; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; font-size: 15px; }
+        .input-group input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; }
+        .input-group input:focus { outline: none; border-color: #002855; }
+        .test-selection { margin-top: 40px; }
+        .test-selection h2 { color: #002855; margin-bottom: 30px; font-size: 24px; text-align: center; }
+        .test-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 30px; }
+        .test-category { background: #f8f9fa; border-radius: 10px; padding: 30px; border: 3px solid #e0e0e0; transition: all 0.3s; }
+        .test-category:hover { border-color: #002855; box-shadow: 0 5px 20px rgba(0,40,85,0.1); }
+        .test-category h3 { color: #002855; font-size: 24px; margin-bottom: 10px; text-align: center; }
+        .test-category p { color: #666; text-align: center; margin-bottom: 20px; font-size: 14px; }
+        .test-btn { display: block; background: white; color: #002855; border: 2px solid #002855; padding: 15px; border-radius: 8px; text-decoration: none; text-align: center; font-weight: 600; font-size: 16px; margin-bottom: 15px; transition: all 0.3s; }
+        .test-btn:hover { background: #002855; color: white; }
+        .test-btn:last-child { margin-bottom: 0; }
+        .timer-info { background: #e3f2fd; padding: 8px 12px; border-radius: 5px; font-size: 12px; color: #002855; text-align: center; margin-top: 10px; }
+        .error-message { color: #dc3545; font-size: 14px; margin-top: 5px; display: none; }
+        .error-message.show { display: block; }
+        @media (max-width: 768px) { .test-grid { grid-template-columns: 1fr; } .header h1 { font-size: 24px; } .content { padding: 30px 20px; } }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <svg class="logo" viewBox="0 0 440 100" xmlns="http://www.w3.org/2000/svg">
-                <!-- JK Shield Logo -->
                 <path d="M 60 10 L 90 10 L 90 60 Q 90 75 75 75 Q 60 75 60 60 Z" fill="white"/>
                 <text x="65" y="55" font-family="Arial" font-size="36" font-weight="bold" fill="#002855">JK</text>
-                
-                <!-- Text -->
                 <text x="110" y="45" font-family="Arial" font-size="32" font-weight="bold" fill="white">JK COACHING</text>
                 <text x="110" y="75" font-family="Arial" font-size="32" font-weight="bold" fill="white">COLLEGE</text>
             </svg>
             <h1>Reading Comprehension Tests</h1>
-            <p>Extract Matching Practice</p>
+            <p>OC & Selective Practice</p>
         </div>
 
         <div class="content">
@@ -236,33 +69,33 @@
                     <!-- OC Tests -->
                     <div class="test-category">
                         <h3>OC (Year 4)</h3>
-                        <p>8 questions per test</p>
+                        <p>Extract Matching & Gap Fill</p>
                         
-                        <a href="#" class="test-btn" onclick="startTest('oc-time.html', event)">
-                            Set 1: Time
+                        <a href="#" class="test-btn" onclick="startTest('oc-fire.html', event)">
+                            Set 1: Fire Extract
                         </a>
-                        <div class="timer-info">⏱️ 11 minutes 30 seconds</div>
+                        <div class="timer-info">⏱️ 11 minutes | 8 questions</div>
                         
-                        <a href="#" class="test-btn" onclick="startTest('oc-transport.html', event)" style="margin-top: 15px;">
-                            Set 2: Transport
+                        <a href="#" class="test-btn" onclick="startTest('oc-flyingmachines.html', event)" style="margin-top: 15px;">
+                            Set 2: Flying Machines Gap
                         </a>
-                        <div class="timer-info">⏱️ 11 minutes 30 seconds</div>
+                        <div class="timer-info">⏱️ 8 minutes | 6 questions</div>
                     </div>
 
                     <!-- Selective Tests -->
                     <div class="test-category">
                         <h3>Selective (Year 6)</h3>
-                        <p>10 questions per test</p>
+                        <p>Poetry & Extract Matching</p>
                         
-                        <a href="#" class="test-btn" onclick="startTest('selective-memory.html', event)">
-                            Set 1: Memory
+                        <a href="#" class="test-btn" onclick="startTest('selective-frost.html', event)">
+                            Set 1: Frost Poetry
                         </a>
-                        <div class="timer-info">⏱️ 12 minutes 30 seconds</div>
+                        <div class="timer-info">⏱️ 11 minutes | 10 questions</div>
                         
-                        <a href="#" class="test-btn" onclick="startTest('selective-naturalworld.html', event)" style="margin-top: 15px;">
-                            Set 2: Natural World
+                        <a href="#" class="test-btn" onclick="startTest('selective-language.html', event)" style="margin-top: 15px;">
+                            Set 2: Language Extract
                         </a>
-                        <div class="timer-info">⏱️ 12 minutes 30 seconds</div>
+                        <div class="timer-info">⏱️ 12 minutes | 10 questions</div>
                     </div>
                 </div>
             </div>
@@ -272,7 +105,6 @@
     <script>
         function startTest(testFile, event) {
             event.preventDefault();
-            
             const nameInput = document.getElementById('studentName');
             const studentName = nameInput.value.trim();
             const studentEmail = document.getElementById('studentEmail').value.trim();
@@ -287,16 +119,11 @@
 
             nameInput.style.borderColor = '#ddd';
             nameError.classList.remove('show');
-
-            // Store student info in sessionStorage
             sessionStorage.setItem('studentName', studentName);
             sessionStorage.setItem('studentEmail', studentEmail);
-
-            // Navigate to test
             window.location.href = testFile;
         }
 
-        // Clear any previous session data on page load
         window.addEventListener('load', function() {
             sessionStorage.removeItem('studentName');
             sessionStorage.removeItem('studentEmail');
