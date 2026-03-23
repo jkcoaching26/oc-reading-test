@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selective Reading Test - Frost Poetry</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .header { background: #002855; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .timer { font-size: 24px; font-weight: bold; }
+        .question-num { font-size: 24px; font-weight: bold; }
+        .main-container { max-width: 1400px; margin: 20px auto; background: white; min-height: calc(100vh - 160px); display: flex; }
+        .left-panel { width: 50%; padding: 30px; border-right: 2px solid #ddd; overflow-y: auto; max-height: calc(100vh - 160px); }
+        .instructions { background: #f9f9f9; padding: 15px; border-left: 4px solid #002855; margin-bottom: 20px; font-size: 14px; line-height: 1.6; }
+        .poem-title { font-size: 22px; font-weight: bold; color: #002855; margin-bottom: 5px; }
+        .poem-author { font-size: 16px; font-style: italic; color: #666; margin-bottom: 25px; }
+        .poem { font-size: 16px; line-height: 2; font-style: italic; }
+        .poem .stanza { margin-bottom: 25px; }
+        .right-panel { width: 50%; padding: 20px; background: #f9f9f9; overflow-y: auto; max-height: calc(100vh - 160px); }
+        .questions-header { font-size: 16px; font-weight: bold; margin-bottom: 15px; color: #333; }
+        .question-item { background: white; padding: 12px; margin-bottom: 10px; border-radius: 5px; border: 2px solid #e0e0e0; }
+        .question-item.correct { border-color: #28a745; background: #f0fdf4; }
+        .question-item.incorrect { border-color: #dc3545; background: #fef2f2; }
+        .question-text { font-size: 13px; margin-bottom: 8px; color: #333; line-height: 1.4; font-weight: 600; }
+        .options { display: flex; flex-direction: column; gap: 6px; }
+        .option { display: flex; align-items: flex-start; gap: 8px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 13px; line-height: 1.4; }
+        .option:hover { background: #f0f0f0; }
+        .option.selected { background: #e3f2fd; border-color: #2196F3; }
+        .option.correct-answer { background: #d4edda; border-color: #28a745; }
+        .option.wrong-answer { background: #f8d7da; border-color: #dc3545; }
+        .option input { margin-top: 2px; }
+        .feedback { margin-top: 6px; padding: 6px; border-radius: 4px; font-size: 12px; display: none; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #d4edda; color: #155724; }
+        .feedback.incorrect { background: #f8d7da; color: #721c24; }
+        .bottom-bar { background: #002855; padding: 15px 30px; display: flex; justify-content: space-between; position: fixed; bottom: 0; left: 0; right: 0; }
+        .nav-btn, .submit-btn { background: white; color: #002855; border: none; padding: 12px 40px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; }
+        .submit-btn { background: #28a745; color: white; }
+        .submit-btn:disabled { background: #adb5bd; cursor: not-allowed; }
+        .results-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
+        .results-modal.show { display: flex; }
+        .results-content { background: white; padding: 40px; border-radius: 10px; text-align: center; max-width: 500px; }
+        .score-display { font-size: 64px; font-weight: bold; color: #002855; margin: 20px 0; }
+        .close-btn { background: #002855; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="timer" id="timer">11:00</div>
+        <div class="question-num">Questions 9-18</div>
+        <svg width="150" height="35" viewBox="0 0 300 70">
+            <path d="M 10 5 L 30 5 L 30 40 Q 30 52 20 52 Q 10 52 10 40 Z" fill="white"/>
+            <text x="13" y="38" font-family="Arial" font-size="28" font-weight="bold" fill="#002855">JK</text>
+            <text x="45" y="30" font-family="Arial" font-size="20" font-weight="bold" fill="white">JK COACHING</text>
+            <text x="45" y="50" font-family="Arial" font-size="20" font-weight="bold" fill="white">COLLEGE</text>
+        </svg>
+    </div>
+
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="instructions">
+                <strong>Read the poem below by Robert Frost, then answer the questions.</strong>
+            </div>
+            
+            <div class="poem-title">Stopping by Woods on a Snowy Evening</div>
+            <div class="poem-author">by Robert Frost</div>
+            
+            <div class="poem">
+                <div class="stanza">
+                    Whose woods these are I think I know.<br>
+                    His house is in the village though;<br>
+                    He will not see me stopping here<br>
+                    To watch his woods fill up with snow.
+                </div>
+                <div class="stanza">
+                    My little horse must think it queer<br>
+                    To stop without a farmhouse near<br>
+                    Between the woods and frozen lake<br>
+                    The darkest evening of the year.
+                </div>
+                <div class="stanza">
+                    He gives his harness bells a shake<br>
+                    To ask if there is some mistake.<br>
+                    The only other sound's the sweep<br>
+                    Of easy wind and downy flake.
+                </div>
+                <div class="stanza">
+                    The woods are lovely, dark and deep,<br>
+                    But I have promises to keep,<br>
+                    And miles to go before I sleep,<br>
+                    And miles to go before I sleep.
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="questions-header">For questions 9–18, choose the option (A, B, C or D) which best answers the question.</div>
+            
+            <div class="question-item" data-question="9" data-answer="B">
+                <div class="question-text">9. 'Whose woods these are I think I know' is mainly significant because</div>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q9" value="A"> <span><strong>A</strong> it establishes the speaker recognises the owner and is reassured by this</span></label>
+                    <label class="option"><input type="radio" name="q9" value="B"> <span><strong>B</strong> 'I think' introduces a note of uncertainty — already a slight drift from ordinary confidence</span></label>
+                    <label class="option"><input type="radio" name="q9" value="C"> <span><strong>C</strong> it shows the speaker conscious of being on someone else's land without permission</span></label>
+                    <label class="option"><input type="radio" name="q9" value="D"> <span><strong>D</strong> it suggests the speaker covets the owner's beautiful land</span></label>
+                </div>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="10" data-answer="D">
+                <div class="question-text">10. 'He will not see me stopping here' is mainly significant because</div>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q10" value="A"> <span><strong>A</strong> the speaker is relieved to have entered land without the owner's knowledge</span></label>
+                    <label class="option"><input type="radio" name="q10" value="B"> <span><strong>B</strong> the owner's indifference to the natural world would prevent understanding why the speaker stopped</span></label>
+                    <label class="option"><input type="radio" name="q10" value="C"> <span><strong>C</strong> the speaker is deliberately hiding out of shame or embarrassment</span></label>
+                    <label class="option"><input type="radio" name="q10" value="D"> <span><strong>D</strong> absence of the owner creates a private, unobserved moment belonging entirely to the speaker</span></label>
+                </div>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="11" data-answer="A">
+                <div class="question-text">11. The horse 'must think it queer / To stop without a farmhouse near' mainly suggests</div>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q11" value="A"> <span><strong>A</strong> the horse as the voice of ordinary purpose — stopping with no practical reason is, by that measure, strange</span></label>
+                    <label class="option"><input type="radio" name="q11" value="B"> <span><strong>B</strong> the speaker feeling guilty and imagining even the horse judges the behaviour</span></label>
+                    <label class="option"><input type="radio" name="q11" value="C"> <span><strong>C</strong> the horse sensing danger and warning the speaker the stopping place is unsafe</span></label>
+                    <label class="option"><input type="radio" name="q11" value="D"> <span><strong>D</strong> how completely isolated the speaker is from any human community</span></label>
+                </div>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="12" data-answer="C">
+                <div class="question-text">12. 'The darkest evening of the year' is mainly significant as</div>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q12" value="A"> <span><strong>A</strong> the night chosen deliberately by the speaker, knowing it would be the most beautiful</span></label>
+                    <label class="option"><input type="radio" name="q12" value="B"> <span><strong>B</strong> physical danger from the cold increasing the urgency of moving on</span></label>
+                    <label class="option"><input type="radio" name="q12" value="C"> <span><strong>C</strong> a moment of maximum darkness — weighted with the significance of endings</span></label>
+                    <label class="option"><input type="radio" name="q12" value="D"> <span><strong>D</strong> a measure of how difficult and lonely the speaker's journey has been</span></label>
+                </div>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="13" data-answer="B">
+                <div class="question-text">13. The harness bells and the 'sweep / Of easy wind and downy flake' together mainly suggest</div>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q13" value="A"> <span><strong>A</strong> the natural world hostile — sound and cold working together to drive the speaker back</span></label>
+                    <label class="option"><input type="radio" name="q13" value="B"> <span><strong>B</strong> the ordinary world and the natural world each making a quiet claim on the speaker</span></label>
+                    <label class="option"><input type="radio" name="q13" value="C"> <span><strong>C</strong> the speaker so absorbed in the woods that surrounding sounds no longer register</span></label>
+                    <label class="option"><input type="radio" name="q13" value="D"> <span><strong>D</strong> the peacefulness of the scene proving there is nothing to fear from remaining</span></label>
+                </div>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="14" data-answer="D">
+                <div class="question-text">14. 'lovely, dark and deep' is mainly significant because</div>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q14" value="A"> <span><strong>A</strong> 'lovely' shows admiration while 'dark and deep' describe the physical difficulty of entering</span></label>
+                    <label class="option"><input type="radio" name="q14" value="B"> <span><strong>B</strong> the adjectives build from most pleasant to most threatening, warning the speaker away</span></label>
+                    <label class="option"><input type="radio" name="q14" value="C"> <span><strong>C</strong> 'dark and deep' modify and deepen 'lovely' — beauty inseparable from danger</span></label>
+                    <label class="option"><input type="radio" name="q14" value="D"> <span><strong>D</strong> all three qualities coexist — the woods are attractive precisely because they are dark and deep</span></label>
+                </div>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="15" data-answer="A">
+                <div class="question-text">15. 'But' at the start of 'But I have promises to keep' is mainly significant as</div>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q15" value="A"> <span><strong>A</strong> the poem's exact turning point — whatever the woods offer, the world of obligation pulls back</span></label>
+                    <label class="option"><input type="radio" name="q15" value="B"> <span><strong>B</strong> reluctance to leave combined with acceptance that duty is more important than desire</span></label>
+                    <label class="option"><input type="radio" name="q15" value="C"> <span><strong>C</strong> the speaker arguing themselves out of the temptation to enter the woods</span></label>
+                    <label class="option"><input type="radio" name="q15" value="D"> <span><strong>D</strong> a contrast between private feelings and the expectations of those who hold the promises</span></label>
+                </div>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="16" data-answer="C">
+                <div class="question-text">16. 'promises to keep' is mainly significant as</div>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q16" value="A"> <span><strong>A</strong> evidence the speaker is already late for commitments made earlier</span></label>
+                    <label class="option"><input type="radio" name="q16" value="B"> <span><strong>B</strong> a mark of moral character — the speaker valuing loyalty above personal pleasure</span></label>
+                    <label class="option"><input type="radio" name="q16" value="C"> <span><strong>C</strong> all the obligations and unfinished business that keep the speaker in the living world</span></label>
+                    <label class="option"><input type="radio" name="q16" value="D"> <span><strong>D</strong> resentment of obligations, envying those with no promises to honour</span></label>
+                </div>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="17" data-answer="D">
+                <div class="question-text">17. The repetition of 'And miles to go before I sleep' in the final two lines mainly</div>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q17" value="A"> <span><strong>A</strong> creates a hypnotic effect mirroring the drowsiness the speaker feels in the cold and dark</span></label>
+                    <label class="option"><input type="radio" name="q17" value="B"> <span><strong>B</strong> emphasises physical exhaustion and the great distance still ahead</span></label>
+                    <label class="option"><input type="radio" name="q17" value="C"> <span><strong>C</strong> shows the speaker reassuring themselves by repeating their purpose aloud</span></label>
+                    <label class="option"><input type="radio" name="q17" value="D"> <span><strong>D</strong> shifts meaning between the two lines — literal distance remaining to life's work still undone before death</span></label>
+                </div>
+                <div class="feedback"></div>
+            </div>
+
+            <div class="question-item" data-question="18" data-answer="B">
+                <div class="question-text">18. The poem as a whole mainly suggests</div>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q18" value="A"> <span><strong>A</strong> the natural world as a place of rest offering the weary traveller escape from burdens</span></label>
+                    <label class="option"><input type="radio" name="q18" value="B"> <span><strong>B</strong> the pull of stillness, darkness, and rest is real — but the speaker turns back to the road, held by obligations not yet complete</span></label>
+                    <label class="option"><input type="radio" name="q18" value="C"> <span><strong>C</strong> a crisis in which the poem records a struggle between the desire to live and the desire to die</span></label>
+                    <label class="option"><input type="radio" name="q18" value="D"> <span><strong>D</strong> the speaker's journey through snow as a metaphor for moving forward without knowing the final destination</span></label>
+                </div>
+                <div class="feedback"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <button class="nav-btn" onclick="goBack()">Back</button>
+        <button class="submit-btn" id="submitBtn" onclick="submitTest()">Submit Answers</button>
+        <button class="nav-btn">Next</button>
+    </div>
+
+    <div class="results-modal" id="resultsModal">
+        <div class="results-content">
+            <h2>Test Complete!</h2>
+            <div class="score-display" id="scoreDisplay"></div>
+            <p id="scoreMessage"></p>
+            <p style="margin-top: 20px; font-size: 14px;">Your results have been saved.</p>
+            <button class="close-btn" onclick="goBack()">Return to Main Menu</button>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+        let selectedAnswers = {};
+        let submitted = false;
+        let timerInterval;
+        const studentName = sessionStorage.getItem('studentName') || 'Unknown';
+        const studentEmail = sessionStorage.getItem('studentEmail') || '';
+
+        function startTimer() {
+            let minutes = 11; let seconds = 0;
+            timerInterval = setInterval(() => {
+                if (seconds === 0) { if (minutes === 0) { clearInterval(timerInterval); alert('Time is up!'); submitTest(); return; } minutes--; seconds = 59; } else { seconds--; }
+                document.getElementById('timer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        document.querySelectorAll('.option input').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (submitted) return;
+                const questionItem = this.closest('.question-item');
+                const questionNum = questionItem.dataset.question;
+                questionItem.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                this.closest('.option').classList.add('selected');
+                selectedAnswers[questionNum] = this.value;
+                if (Object.keys(selectedAnswers).length === 10) document.getElementById('submitBtn').disabled = false;
+            });
+        });
+
+        async function submitTest() {
+            if (Object.keys(selectedAnswers).length !== 10) { alert('Please answer all questions before submitting.'); return; }
+            if (!confirm('Are you sure you want to submit?')) return;
+            clearInterval(timerInterval);
+            submitted = true;
+            let correctCount = 0;
+            document.querySelectorAll('.question-item').forEach(item => {
+                const questionNum = item.dataset.question;
+                const correctAnswer = item.dataset.answer;
+                const userAnswer = selectedAnswers[questionNum];
+                const feedback = item.querySelector('.feedback');
+                item.querySelectorAll('input').forEach(inp => inp.disabled = true);
+                if (userAnswer === correctAnswer) { correctCount++; item.classList.add('correct'); item.querySelector(`.option input[value="${userAnswer}"]`).closest('.option').classList.add('correct-answer'); feedback.textContent = '✓ Correct'; feedback.classList.add('correct', 'show'); }
+                else { item.classList.add('incorrect'); item.querySelector(`.option input[value="${userAnswer}"]`).closest('.option').classList.add('wrong-answer'); feedback.textContent = '✗ Incorrect'; feedback.classList.add('incorrect', 'show'); }
+            });
+            document.getElementById('submitBtn').disabled = true;
+            const submissionData = { timestamp: new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney' }), studentName, studentEmail, testType: 'Selective', testName: 'Frost Poetry', score: correctCount, totalQuestions: 10, percentage: Math.round((correctCount / 10) * 100) };
+            try { await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(submissionData) }); } catch (error) { console.error('Error:', error); }
+            document.getElementById('scoreDisplay').textContent = `${correctCount}/10`;
+            document.getElementById('scoreMessage').textContent = `You scored ${Math.round((correctCount/10)*100)}%`;
+            document.getElementById('resultsModal').classList.add('show');
+        }
+
+        function goBack() { window.location.href = 'index.html'; }
+        document.getElementById('submitBtn').disabled = true;
+        startTimer();
+    </script>
+</body>
+</html>
