@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OC Reading Test - Crows</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .header { background: #002855; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .timer { font-size: 24px; font-weight: bold; }
+        .question-num { font-size: 24px; font-weight: bold; }
+        .main-container { max-width: 1400px; margin: 20px auto; background: white; min-height: calc(100vh - 160px); display: flex; }
+        .left-panel { width: 60%; padding: 20px; border-right: 2px solid #ddd; overflow-y: auto; max-height: calc(100vh - 160px); }
+        .instructions { background: #f9f9f9; padding: 15px; border-left: 4px solid #002855; margin-bottom: 20px; font-size: 14px; line-height: 1.6; }
+        .passage { line-height: 2; font-size: 15px; }
+        .passage p { margin-bottom: 20px; }
+        .gap { display: inline-block; min-width: 80px; padding: 5px 10px; background: #e3f2fd; border: 2px solid #2196F3; border-radius: 5px; font-weight: bold; color: #1565C0; margin: 0 5px; }
+        .right-panel { width: 40%; padding: 20px; background: #f9f9f9; overflow-y: auto; max-height: calc(100vh - 160px); }
+        .sentences-header { font-size: 16px; font-weight: bold; margin-bottom: 20px; color: #333; }
+        .sentence-option { background: white; padding: 15px; margin-bottom: 12px; border-radius: 5px; border: 2px solid #e0e0e0; }
+        .sentence-option strong { color: #002855; }
+        .question-item { background: white; padding: 15px; margin-bottom: 12px; border-radius: 5px; border: 2px solid #e0e0e0; }
+        .question-item.correct { border-color: #28a745; background: #f0fdf4; }
+        .question-item.incorrect { border-color: #dc3545; background: #fef2f2; }
+        .question-text { font-size: 14px; margin-bottom: 10px; color: #333; line-height: 1.5; font-weight: bold; }
+        .dropdown { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px; cursor: pointer; }
+        .dropdown.correct-answer { border-color: #28a745; background: #d4edda; }
+        .dropdown.wrong-answer { border-color: #dc3545; background: #f8d7da; }
+        .feedback { margin-top: 8px; padding: 8px; border-radius: 4px; font-size: 13px; display: none; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #d4edda; color: #155724; }
+        .feedback.incorrect { background: #f8d7da; color: #721c24; }
+        .bottom-bar { background: #002855; padding: 15px 30px; display: flex; justify-content: space-between; position: fixed; bottom: 0; left: 0; right: 0; }
+        .nav-btn, .submit-btn { background: white; color: #002855; border: none; padding: 12px 40px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; }
+        .submit-btn { background: #28a745; color: white; }
+        .submit-btn:disabled { background: #adb5bd; cursor: not-allowed; }
+        .results-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
+        .results-modal.show { display: flex; }
+        .results-content { background: white; padding: 40px; border-radius: 10px; text-align: center; max-width: 500px; }
+        .score-display { font-size: 64px; font-weight: bold; color: #002855; margin: 20px 0; }
+        .close-btn { background: #002855; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+        .review-btn { background: #28a745; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 20px; margin-right: 10px; }
+        .correct-answer-text { font-weight: bold; color: #155724; margin-left: 10px; }
+        .answers-section { margin-top: 30px; border-top: 2px solid #ddd; padding-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="timer" id="timer">8:00</div>
+        <div class="question-num">Questions 12-17</div>
+        <svg width="150" height="35" viewBox="0 0 300 70">
+            <path d="M 10 5 L 30 5 L 30 40 Q 30 52 20 52 Q 10 52 10 40 Z" fill="white"/>
+            <text x="13" y="38" font-family="Arial" font-size="28" font-weight="bold" fill="#002855">JK</text>
+            <text x="45" y="30" font-family="Arial" font-size="20" font-weight="bold" fill="white">JK COACHING</text>
+            <text x="45" y="50" font-family="Arial" font-size="20" font-weight="bold" fill="white">COLLEGE</text>
+        </svg>
+    </div>
+
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="instructions">
+                <strong>Read the text below then answer the questions.</strong><br><br>
+                Six sentences have been removed from the text. Choose from the sentences (A–G) the one which fits each gap (12–17). There is one extra sentence which you do not need to use.
+            </div>
+            
+            <h2 style="color: #002855; margin-bottom: 20px;">The Intelligence of Crows</h2>
+            
+            <div class="passage">
+                <p>Of all the birds that share our cities and countryside, few have attracted more scientific attention than the crow. For centuries, crows were regarded as pests — noisy, opportunistic, and not especially interesting. That view has changed dramatically. Over the past three decades, researchers studying crow behaviour have produced findings that have surprised even experienced biologists. The crow, it turns out, is one of the most cognitively capable animals on the planet.</p>
+                
+                <p>Crows are among the very few non-human animals known to make and use tools. In parts of Japan, carrion crows have been observed dropping hard-shelled nuts onto pedestrian crossings and waiting for passing cars to crack them open. In New Caledonia, crows fashion hooked sticks from twigs to extract insects from narrow crevices in bark. In a laboratory experiment conducted at Oxford University, a researcher presented a group of crows with a transparent tube of water containing a floating piece of food just out of reach. The crows dropped stones into the tube, raising the water level until the food was within reach. <span class="gap">12</span> The experiment has since been replicated with wild crows across several continents, consistently producing the same result.</p>
+                
+                <p><span class="gap">13</span> Building on this evidence, researchers at the University of Auckland designed a series of experiments to investigate how crows approach problems they have never encountered before. The most revealing of these became known as the Aesop's Fable task: a transparent tube of water, a floating reward just out of reach, and a selection of objects the crow could choose to drop in. <span class="gap">14</span> When researchers introduced objects of different weights and sizes, the crows consistently selected those most likely to displace the greatest volume of water, demonstrating not just memory but active physical reasoning.</p>
+                
+                <p>Tool use is not the only area in which crows have surprised researchers. Studies at the University of Washington found that crows can recognise individual human faces and remember them for years. In one experiment, researchers wore distinctive masks while trapping and releasing crows on campus. In the weeks that followed, crows that had been trapped began scolding anyone wearing the same mask, even when the mask was worn by someone the birds had never encountered before. Crows that had not been trapped ignored the mask entirely. <span class="gap">15</span> The implications for our understanding of animal cognition are, researchers argue, considerable.</p>
+                
+                <p>Across more than forty published studies conducted over the past two decades, the results have been striking in their diversity. <span class="gap">16</span> One crow in particular, observed by Dr Sarah Jelbert over three consecutive field seasons in New Caledonia, solved every new variant of the Aesop task presented to her — including versions that required her to ignore a tempting but ineffective object placed beside the correct one. The researchers noted that she appeared to inspect each object carefully before making her selection, pausing in a manner that several members of the team described as unmistakably deliberate. <span class="gap">17</span> For a long time, intelligence was assumed to require a large brain and a complex social structure. Crows have neither, by the standards that once seemed to matter. What they have instead, it appears, is something considerably more difficult to measure: the capacity to think.</p>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="sentences-header">SENTENCES</div>
+            
+            <div class="sentence-option">
+                <strong>A</strong> Individual crows tested in separate trials showed markedly different strategies, suggesting that problem-solving styles may vary as much between individuals as between species.
+            </div>
+            <div class="sentence-option">
+                <strong>B</strong> This ability to recognise and remember specific human faces places crows among a very small group of non-human animals with demonstrated long-term individual memory.
+            </div>
+            <div class="sentence-option">
+                <strong>C</strong> Even so, researchers had long assumed such behaviour was coincidental, and it took decades of careful experimentation to establish that crows use tools deliberately and consistently.
+            </div>
+            <div class="sentence-option">
+                <strong>D</strong> As well as this, crows have been observed collecting small shiny objects and storing them in hidden caches near their nesting sites.
+            </div>
+            <div class="sentence-option">
+                <strong>E</strong> He had not trained the birds to do this; the crows had worked out the sequence entirely on their own.
+            </div>
+            <div class="sentence-option">
+                <strong>F</strong> Not only did the findings challenge long-held assumptions about the relationship between brain size and intelligence, they also prompted researchers to reconsider which cognitive abilities are uniquely human.
+            </div>
+            <div class="sentence-option">
+                <strong>G</strong> Yet despite its apparent simplicity, the task required the crow to plan several steps ahead — a capacity that researchers had previously considered uniquely human.
+            </div>
+
+            <div class="answers-section">
+                <div class="sentences-header">YOUR ANSWERS</div>
+                
+                <div class="question-item" data-question="12" data-answer="E">
+                    <div class="question-text">Gap 12:</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Sentence A</option>
+                        <option value="B">Sentence B</option>
+                        <option value="C">Sentence C</option>
+                        <option value="D">Sentence D</option>
+                        <option value="E">Sentence E</option>
+                        <option value="F">Sentence F</option>
+                        <option value="G">Sentence G</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="13" data-answer="C">
+                    <div class="question-text">Gap 13:</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Sentence A</option>
+                        <option value="B">Sentence B</option>
+                        <option value="C">Sentence C</option>
+                        <option value="D">Sentence D</option>
+                        <option value="E">Sentence E</option>
+                        <option value="F">Sentence F</option>
+                        <option value="G">Sentence G</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="14" data-answer="G">
+                    <div class="question-text">Gap 14:</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Sentence A</option>
+                        <option value="B">Sentence B</option>
+                        <option value="C">Sentence C</option>
+                        <option value="D">Sentence D</option>
+                        <option value="E">Sentence E</option>
+                        <option value="F">Sentence F</option>
+                        <option value="G">Sentence G</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="15" data-answer="B">
+                    <div class="question-text">Gap 15:</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Sentence A</option>
+                        <option value="B">Sentence B</option>
+                        <option value="C">Sentence C</option>
+                        <option value="D">Sentence D</option>
+                        <option value="E">Sentence E</option>
+                        <option value="F">Sentence F</option>
+                        <option value="G">Sentence G</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="16" data-answer="A">
+                    <div class="question-text">Gap 16:</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Sentence A</option>
+                        <option value="B">Sentence B</option>
+                        <option value="C">Sentence C</option>
+                        <option value="D">Sentence D</option>
+                        <option value="E">Sentence E</option>
+                        <option value="F">Sentence F</option>
+                        <option value="G">Sentence G</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="17" data-answer="F">
+                    <div class="question-text">Gap 17:</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Sentence A</option>
+                        <option value="B">Sentence B</option>
+                        <option value="C">Sentence C</option>
+                        <option value="D">Sentence D</option>
+                        <option value="E">Sentence E</option>
+                        <option value="F">Sentence F</option>
+                        <option value="G">Sentence G</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <button class="nav-btn" onclick="goBack()">Back</button>
+        <button class="submit-btn" id="submitBtn" onclick="submitTest()">Submit Answers</button>
+        <button class="nav-btn">Next</button>
+    </div>
+
+    <div class="results-modal" id="resultsModal">
+        <div class="results-content">
+            <h2>Test Complete!</h2>
+            <div class="score-display" id="scoreDisplay"></div>
+            <p id="scoreMessage"></p>
+            <button class="review-btn" onclick="closeModal()">Close & Review Answers</button>
+            <button class="close-btn" onclick="goBack()">Return to Main Menu</button>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+        let selectedAnswers = {};
+        let submitted = false;
+        let timerInterval;
+        const studentName = sessionStorage.getItem('studentName') || 'Unknown';
+        const studentEmail = sessionStorage.getItem('studentEmail') || '';
+
+        function startTimer() {
+            let minutes = 8; let seconds = 0;
+            timerInterval = setInterval(() => {
+                if (seconds === 0) { if (minutes === 0) { clearInterval(timerInterval); alert('Time is up!'); submitTest(); return; } minutes--; seconds = 59; } else { seconds--; }
+                document.getElementById('timer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            dropdown.addEventListener('change', function() {
+                if (submitted) return;
+                const questionItem = this.closest('.question-item');
+                const questionNum = questionItem.dataset.question;
+                if (this.value) selectedAnswers[questionNum] = this.value;
+                if (Object.keys(selectedAnswers).length === 6) document.getElementById('submitBtn').disabled = false;
+            });
+        });
+
+        async function submitTest() {
+            if (Object.keys(selectedAnswers).length !== 6) { alert('Please answer all questions before submitting.'); return; }
+            if (!confirm('Are you sure you want to submit?')) return;
+            clearInterval(timerInterval);
+            submitted = true;
+            let correctCount = 0;
+            document.querySelectorAll('.question-item').forEach(item => {
+                const questionNum = item.dataset.question;
+                const correctAnswer = item.dataset.answer;
+                const userAnswer = selectedAnswers[questionNum];
+                const dropdown = item.querySelector('.dropdown');
+                const feedback = item.querySelector('.feedback');
+                dropdown.disabled = true;
+                if (userAnswer === correctAnswer) { correctCount++; item.classList.add('correct'); dropdown.classList.add('correct-answer'); feedback.textContent = '✓ Correct'; feedback.classList.add('correct', 'show'); }
+                else { item.classList.add('incorrect'); dropdown.classList.add('wrong-answer'); feedback.innerHTML = '✗ Incorrect <span class="correct-answer-text">→ Correct: ' + correctAnswer + '</span>'; feedback.classList.add('incorrect', 'show'); }
+            });
+            document.getElementById('submitBtn').disabled = true;
+            const submissionData = { timestamp: new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney' }), studentName, studentEmail, testType: 'OC', testName: 'Crows Gap', score: correctCount, totalQuestions: 6, percentage: Math.round((correctCount / 6) * 100) };
+            try { await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(submissionData) }); } catch (error) { console.error('Error:', error); }
+            document.getElementById('scoreDisplay').textContent = `${correctCount}/6`;
+            document.getElementById('scoreMessage').textContent = `You scored ${Math.round((correctCount/6)*100)}%`;
+            document.getElementById('resultsModal').classList.add('show');
+        }
+
+        function goBack() { window.location.href = 'index.html'; }
+        function closeModal() { document.getElementById('resultsModal').classList.remove('show'); }
+        document.getElementById('submitBtn').disabled = true;
+        startTimer();
+    </script>
+</body>
+</html>
