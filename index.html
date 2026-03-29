@@ -26,13 +26,15 @@
         .test-category:hover { border-color: #002855; box-shadow: 0 5px 20px rgba(0,40,85,0.1); }
         .test-category h3 { color: #002855; font-size: 22px; margin-bottom: 8px; text-align: center; }
         .test-category p { color: #666; text-align: center; margin-bottom: 15px; font-size: 14px; }
-        .test-btn { display: block; background: white; color: #002855; border: 2px solid #002855; padding: 12px; border-radius: 8px; text-decoration: none; text-align: center; font-weight: 600; font-size: 15px; margin-bottom: 8px; transition: all 0.3s; }
+        .test-btn { display: block; background: white; color: #002855; border: 2px solid #002855; padding: 12px; border-radius: 8px; text-decoration: none; text-align: center; font-weight: 600; font-size: 14px; margin-bottom: 8px; transition: all 0.3s; }
         .test-btn:hover { background: #002855; color: white; }
         .test-btn:last-child { margin-bottom: 0; }
         .timer-info { background: #e3f2fd; padding: 6px 10px; border-radius: 5px; font-size: 11px; color: #002855; text-align: center; margin-bottom: 12px; }
         .error-message { color: #dc3545; font-size: 14px; margin-top: 5px; display: none; }
         .error-message.show { display: block; }
         .new-badge { background: #28a745; color: white; font-size: 10px; padding: 2px 6px; border-radius: 3px; margin-left: 8px; vertical-align: middle; }
+        .section-divider { border-top: 2px dashed #ddd; margin: 15px 0; padding-top: 10px; }
+        .section-label { font-size: 12px; color: #666; text-align: center; margin-bottom: 10px; font-weight: 600; }
         @media (max-width: 768px) { .test-grid { grid-template-columns: 1fr; } .header h1 { font-size: 24px; } .content { padding: 30px 20px; } }
     </style>
 </head>
@@ -72,76 +74,75 @@
                         <h3>OC (Year 4)</h3>
                         <p>Extract Matching & Gap Fill</p>
                         
-                        <a href="#" class="test-btn" onclick="startTest('oc-fire.html', event)">
-                            Set 1: Fire Extract
-                        </a>
-                        <div class="timer-info">⏱️ 11 min | Q18-25 (8 questions)</div>
+                        <div class="section-label">📖 EXTRACT MATCHING</div>
                         
-                        <a href="#" class="test-btn" onclick="startTest('oc-time.html', event)">
-                            Set 2: Time Extract
-                        </a>
-                        <div class="timer-info">⏱️ 11:30 min | Q18-25 (8 questions)</div>
+                        <a href="#" class="test-btn" onclick="startTest('oc-fire.html', event)">Fire Extract</a>
+                        <div class="timer-info">⏱️ 11 min | Q18-25</div>
                         
-                        <a href="#" class="test-btn" onclick="startTest('oc-transport.html', event)">
-                            Set 3: Transport Extract
-                        </a>
-                        <div class="timer-info">⏱️ 11:30 min | Q18-25 (8 questions)</div>
+                        <a href="#" class="test-btn" onclick="startTest('oc-time.html', event)">Time Extract</a>
+                        <div class="timer-info">⏱️ 11:30 min | Q18-25</div>
                         
-                        <a href="#" class="test-btn" onclick="startTest('oc-water.html', event)">
-                            Set 4: Water Extract
-                        </a>
-                        <div class="timer-info">⏱️ 11 min | Q18-25 (8 questions)</div>
+                        <a href="#" class="test-btn" onclick="startTest('oc-transport.html', event)">Transport Extract</a>
+                        <div class="timer-info">⏱️ 11:30 min | Q18-25</div>
                         
-                        <a href="#" class="test-btn" onclick="startTest('oc-flyingmachines.html', event)">
-                            Set 5: Flying Machines Gap
-                        </a>
-                        <div class="timer-info">⏱️ 8 min | Q12-17 (6 questions)</div>
+                        <a href="#" class="test-btn" onclick="startTest('oc-water.html', event)">Water Extract</a>
+                        <div class="timer-info">⏱️ 11 min | Q18-25</div>
                         
-                        <a href="#" class="test-btn" onclick="startTest('oc-crows.html', event)">
-                            Set 6: Crows Gap
-                        </a>
-                        <div class="timer-info">⏱️ 8 min | Q12-17 (6 questions)</div>
+                        <div class="section-divider"></div>
+                        <div class="section-label">📝 GAP FILL</div>
+                        
+                        <a href="#" class="test-btn" onclick="startTest('oc-flyingmachines.html', event)">Flying Machines</a>
+                        <div class="timer-info">⏱️ 8 min | Q12-17</div>
+                        
+                        <a href="#" class="test-btn" onclick="startTest('oc-crows.html', event)">Crows</a>
+                        <div class="timer-info">⏱️ 8 min | Q12-17</div>
+                        
+                        <a href="#" class="test-btn" onclick="startTest('oc-elephants.html', event)">Elephants <span class="new-badge">NEW</span></a>
+                        <div class="timer-info">⏱️ 8 min | Q12-17</div>
+                        
+                        <a href="#" class="test-btn" onclick="startTest('oc-penicillin.html', event)">Penicillin <span class="new-badge">NEW</span></a>
+                        <div class="timer-info">⏱️ 8 min | Q12-17</div>
                     </div>
 
                     <!-- Selective Tests -->
                     <div class="test-category">
                         <h3>Selective (Year 6)</h3>
-                        <p>Poetry & Extract Matching</p>
+                        <p>Poetry, Extract & Gap Fill</p>
                         
-                        <a href="#" class="test-btn" onclick="startTest('selective-frost.html', event)">
-                            Set 1: Frost Poetry
-                        </a>
-                        <div class="timer-info">⏱️ 11 min | Q9-18 (10 questions)</div>
+                        <div class="section-label">🎭 POETRY</div>
                         
-                        <a href="#" class="test-btn" onclick="startTest('selective-butterfly.html', event)">
-                            Set 2: Butterfly Poetry
-                        </a>
-                        <div class="timer-info">⏱️ 11 min | Q9-18 (10 questions)</div>
+                        <a href="#" class="test-btn" onclick="startTest('selective-frost.html', event)">Frost Poetry</a>
+                        <div class="timer-info">⏱️ 11 min | Q9-18</div>
                         
-                        <a href="#" class="test-btn" onclick="startTest('selective-language.html', event)">
-                            Set 3: Language Extract
-                        </a>
-                        <div class="timer-info">⏱️ 12 min | Q21-30 (10 questions)</div>
+                        <a href="#" class="test-btn" onclick="startTest('selective-butterfly.html', event)">Butterfly Poetry</a>
+                        <div class="timer-info">⏱️ 11 min | Q9-18</div>
                         
-                        <a href="#" class="test-btn" onclick="startTest('selective-memory.html', event)">
-                            Set 4: Memory Extract
-                        </a>
-                        <div class="timer-info">⏱️ 12:30 min | Q21-30 (10 questions)</div>
+                        <div class="section-divider"></div>
+                        <div class="section-label">📖 EXTRACT MATCHING</div>
                         
-                        <a href="#" class="test-btn" onclick="startTest('selective-naturalworld.html', event)">
-                            Set 5: Natural World Extract
-                        </a>
-                        <div class="timer-info">⏱️ 12:30 min | Q21-30 (10 questions)</div>
+                        <a href="#" class="test-btn" onclick="startTest('selective-language.html', event)">Language Extract</a>
+                        <div class="timer-info">⏱️ 12 min | Q21-30</div>
                         
-                        <a href="#" class="test-btn" onclick="startTest('selective-change.html', event)">
-                            Set 6: Change Extract
-                        </a>
-                        <div class="timer-info">⏱️ 12 min | Q21-30 (10 questions)</div>
+                        <a href="#" class="test-btn" onclick="startTest('selective-memory.html', event)">Memory Extract</a>
+                        <div class="timer-info">⏱️ 12:30 min | Q21-30</div>
                         
-                        <a href="#" class="test-btn" onclick="startTest('selective-graphicnovels.html', event)">
-                            Set 7: Graphic Novels Extract <span class="new-badge">NEW</span>
-                        </a>
-                        <div class="timer-info">⏱️ 12 min | Q21-30 (10 questions)</div>
+                        <a href="#" class="test-btn" onclick="startTest('selective-naturalworld.html', event)">Natural World Extract</a>
+                        <div class="timer-info">⏱️ 12:30 min | Q21-30</div>
+                        
+                        <a href="#" class="test-btn" onclick="startTest('selective-change.html', event)">Change Extract</a>
+                        <div class="timer-info">⏱️ 12 min | Q21-30</div>
+                        
+                        <a href="#" class="test-btn" onclick="startTest('selective-graphicnovels.html', event)">Graphic Novels Extract</a>
+                        <div class="timer-info">⏱️ 12 min | Q21-30</div>
+                        
+                        <div class="section-divider"></div>
+                        <div class="section-label">📝 GAP FILL</div>
+                        
+                        <a href="#" class="test-btn" onclick="startTest('selective-elephants.html', event)">Elephants <span class="new-badge">NEW</span></a>
+                        <div class="timer-info">⏱️ 10 min | Q12-17</div>
+                        
+                        <a href="#" class="test-btn" onclick="startTest('selective-penicillin.html', event)">Penicillin <span class="new-badge">NEW</span></a>
+                        <div class="timer-info">⏱️ 10 min | Q12-17</div>
                     </div>
                 </div>
             </div>

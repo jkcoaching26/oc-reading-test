@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selective Reading Test - Penicillin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .header { background: #002855; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .timer { font-size: 24px; font-weight: bold; }
+        .question-num { font-size: 24px; font-weight: bold; }
+        .main-container { max-width: 1400px; margin: 20px auto; background: white; min-height: calc(100vh - 160px); display: flex; }
+        .left-panel { width: 60%; padding: 20px; border-right: 2px solid #ddd; overflow-y: auto; max-height: calc(100vh - 160px); }
+        .instructions { background: #f9f9f9; padding: 15px; border-left: 4px solid #002855; margin-bottom: 20px; font-size: 14px; line-height: 1.6; }
+        .passage { line-height: 2; font-size: 15px; }
+        .passage p { margin-bottom: 20px; }
+        .gap { display: inline-block; min-width: 80px; padding: 5px 10px; background: #e3f2fd; border: 2px solid #2196F3; border-radius: 5px; font-weight: bold; color: #1565C0; margin: 0 5px; }
+        .right-panel { width: 40%; padding: 20px; background: #f9f9f9; overflow-y: auto; max-height: calc(100vh - 160px); }
+        .sentences-header { font-size: 16px; font-weight: bold; margin-bottom: 20px; color: #333; }
+        .sentence-option { background: white; padding: 15px; margin-bottom: 12px; border-radius: 5px; border: 2px solid #e0e0e0; font-size: 14px; line-height: 1.6; }
+        .sentence-option strong { color: #002855; }
+        .question-item { background: white; padding: 15px; margin-bottom: 12px; border-radius: 5px; border: 2px solid #e0e0e0; }
+        .question-item.correct { border-color: #28a745; background: #f0fdf4; }
+        .question-item.incorrect { border-color: #dc3545; background: #fef2f2; }
+        .question-text { font-size: 14px; margin-bottom: 10px; color: #333; line-height: 1.5; font-weight: bold; }
+        .dropdown { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px; cursor: pointer; }
+        .dropdown.correct-answer { border-color: #28a745; background: #d4edda; }
+        .dropdown.wrong-answer { border-color: #dc3545; background: #f8d7da; }
+        .feedback { margin-top: 8px; padding: 8px; border-radius: 4px; font-size: 13px; display: none; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #d4edda; color: #155724; }
+        .feedback.incorrect { background: #f8d7da; color: #721c24; }
+        .bottom-bar { background: #002855; padding: 15px 30px; display: flex; justify-content: space-between; position: fixed; bottom: 0; left: 0; right: 0; }
+        .nav-btn, .submit-btn { background: white; color: #002855; border: none; padding: 12px 40px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; }
+        .submit-btn { background: #28a745; color: white; }
+        .submit-btn:disabled { background: #adb5bd; cursor: not-allowed; }
+        .results-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
+        .results-modal.show { display: flex; }
+        .results-content { background: white; padding: 40px; border-radius: 10px; text-align: center; max-width: 500px; }
+        .score-display { font-size: 64px; font-weight: bold; color: #002855; margin: 20px 0; }
+        .close-btn { background: #002855; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+        .review-btn { background: #28a745; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 20px; margin-right: 10px; }
+        .correct-answer-text { font-weight: bold; color: #155724; margin-left: 10px; }
+        .answers-section { margin-top: 30px; border-top: 2px solid #ddd; padding-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="timer" id="timer">10:00</div>
+        <div class="question-num">Questions 12-17</div>
+        <svg width="150" height="35" viewBox="0 0 300 70">
+            <path d="M 10 5 L 30 5 L 30 40 Q 30 52 20 52 Q 10 52 10 40 Z" fill="white"/>
+            <text x="13" y="38" font-family="Arial" font-size="28" font-weight="bold" fill="#002855">JK</text>
+            <text x="45" y="30" font-family="Arial" font-size="20" font-weight="bold" fill="white">JK COACHING</text>
+            <text x="45" y="50" font-family="Arial" font-size="20" font-weight="bold" fill="white">COLLEGE</text>
+        </svg>
+    </div>
+
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="instructions">
+                <strong>Read the text below then answer the questions.</strong><br><br>
+                Six sentences have been removed from the text. Choose from the sentences (A–G) the one which fits each gap (12–17). There is one extra sentence which you do not need to use.
+            </div>
+            
+            <h2 style="color: #002855; margin-bottom: 20px;">The Discovery of Penicillin</h2>
+            
+            <div class="passage">
+                <p>Few scientific discoveries have changed the world as quickly or as dramatically as the discovery of penicillin. Before its arrival, infections that today seem minor — a cut, a burst appendix, a bout of pneumonia — were frequently fatal. The discovery that a common mould could kill the bacteria responsible for such infections did not come from a single moment of genius. It came, instead, from a long chain of accidents, missed opportunities, and persistent hard work.</p>
+                
+                <p>By the early twentieth century, scientists already knew that microorganisms caused infectious disease, but they had no reliable means of fighting them once they entered the body. Surgeons relied on antiseptics that often damaged human tissue as readily as they killed bacteria. Physicians could offer their patients little more than rest and the hope that the body's own defences would prove sufficient. The search for a better solution had been underway for decades.</p>
+                
+                <p>The breakthrough that would eventually become penicillin began in September 1928, when the Scottish bacteriologist Alexander Fleming noticed something unexpected on one of his culture plates. <span class="gap">12</span> The paper he eventually produced attracted little attention from the medical community, and Fleming moved on to other research. The explanation for what he had seen only emerged later. <span class="gap">13</span> A spore of Penicillium mould had drifted in through an open window and landed on the dish. Where the mould grew, it appeared to be killing the bacteria immediately around it. <span class="gap">14</span> That question would take twelve more years and two other scientists to answer.</p>
+                
+                <p>In 1938, the chemist Ernst Chain and the pathologist Howard Florey, both working at Oxford University, came across Fleming's overlooked paper and recognised its potential. Over the following two years, they developed a method for purifying penicillin and testing it systematically. In 1940, they injected eight mice with a lethal dose of Streptococcus bacteria. Four were then given doses of penicillin; four received nothing. By the following morning, all four untreated mice had died. All four treated mice had survived. <span class="gap">15</span> With funding secured from both the British and American governments, the team began producing the drug in industrial quantities.</p>
+                
+                <p>The Oxford clinical trials began in 1941, treating patients whose conditions had been considered entirely beyond the reach of medicine. <span class="gap">16</span> One of the first, a police officer named Albert Alexander, had developed a life-threatening infection from a small scratch on his face. Within twenty-four hours of receiving penicillin, his fever had dropped and the infection had begun to retreat. By the end of the war, the drug was being produced in quantities sufficient to treat every Allied casualty, and it is estimated to have saved more than fifty million lives in the decades that followed. <span class="gap">17</span></p>
+                
+                <p>Fleming, Chain and Florey were jointly awarded the Nobel Prize in Physiology or Medicine in 1945. Fleming, typically understated, described his role as little more than noticing something that others had overlooked. What he had noticed, of course, had changed everything.</p>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="sentences-header">SENTENCES</div>
+            
+            <div class="sentence-option">
+                <strong>A</strong> It was not the first time a researcher had seen mould growing on a culture plate, but it was the first time anyone had paused to consider why the bacteria around it had disappeared.
+            </div>
+            <div class="sentence-option">
+                <strong>B</strong> He had been away on holiday and had left a petri dish of bacteria uncovered on his laboratory bench, creating the conditions in which the mould could take hold.
+            </div>
+            <div class="sentence-option">
+                <strong>C</strong> Rather than recognising the full importance of what he had observed, he treated it as a minor curiosity and did little to pursue it further.
+            </div>
+            <div class="sentence-option">
+                <strong>D</strong> What mattered most was not simply that the bacteria had died, but the possibility that a substance produced by the mould might be responsible.
+            </div>
+            <div class="sentence-option">
+                <strong>E</strong> This result demonstrated that penicillin had the potential to act not merely as a laboratory observation, but as a practical and life-saving treatment.
+            </div>
+            <div class="sentence-option">
+                <strong>F</strong> Individual patients treated in the Oxford trials showed markedly different rates of recovery, leading researchers to refine both dosage and timing.
+            </div>
+            <div class="sentence-option">
+                <strong>G</strong> Not only did the drug save millions of lives during the Second World War, it also forced a reconsideration of what illnesses medicine could realistically hope to treat.
+            </div>
+
+            <div class="answers-section">
+                <div class="sentences-header">YOUR ANSWERS</div>
+                
+                <div class="question-item" data-question="12" data-answer="C">
+                    <div class="question-text">Gap 12:</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Sentence A</option>
+                        <option value="B">Sentence B</option>
+                        <option value="C">Sentence C</option>
+                        <option value="D">Sentence D</option>
+                        <option value="E">Sentence E</option>
+                        <option value="F">Sentence F</option>
+                        <option value="G">Sentence G</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="13" data-answer="B">
+                    <div class="question-text">Gap 13:</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Sentence A</option>
+                        <option value="B">Sentence B</option>
+                        <option value="C">Sentence C</option>
+                        <option value="D">Sentence D</option>
+                        <option value="E">Sentence E</option>
+                        <option value="F">Sentence F</option>
+                        <option value="G">Sentence G</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="14" data-answer="D">
+                    <div class="question-text">Gap 14:</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Sentence A</option>
+                        <option value="B">Sentence B</option>
+                        <option value="C">Sentence C</option>
+                        <option value="D">Sentence D</option>
+                        <option value="E">Sentence E</option>
+                        <option value="F">Sentence F</option>
+                        <option value="G">Sentence G</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="15" data-answer="E">
+                    <div class="question-text">Gap 15:</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Sentence A</option>
+                        <option value="B">Sentence B</option>
+                        <option value="C">Sentence C</option>
+                        <option value="D">Sentence D</option>
+                        <option value="E">Sentence E</option>
+                        <option value="F">Sentence F</option>
+                        <option value="G">Sentence G</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="16" data-answer="F">
+                    <div class="question-text">Gap 16:</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Sentence A</option>
+                        <option value="B">Sentence B</option>
+                        <option value="C">Sentence C</option>
+                        <option value="D">Sentence D</option>
+                        <option value="E">Sentence E</option>
+                        <option value="F">Sentence F</option>
+                        <option value="G">Sentence G</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-item" data-question="17" data-answer="G">
+                    <div class="question-text">Gap 17:</div>
+                    <select class="dropdown">
+                        <option value="">Select...</option>
+                        <option value="A">Sentence A</option>
+                        <option value="B">Sentence B</option>
+                        <option value="C">Sentence C</option>
+                        <option value="D">Sentence D</option>
+                        <option value="E">Sentence E</option>
+                        <option value="F">Sentence F</option>
+                        <option value="G">Sentence G</option>
+                    </select>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <button class="nav-btn" onclick="goBack()">Back</button>
+        <button class="submit-btn" id="submitBtn" onclick="submitTest()">Submit Answers</button>
+        <button class="nav-btn">Next</button>
+    </div>
+
+    <div class="results-modal" id="resultsModal">
+        <div class="results-content">
+            <h2>Test Complete!</h2>
+            <div class="score-display" id="scoreDisplay"></div>
+            <p id="scoreMessage"></p>
+            <button class="review-btn" onclick="closeModal()">Close & Review Answers</button>
+            <button class="close-btn" onclick="goBack()">Return to Main Menu</button>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+        let selectedAnswers = {};
+        let submitted = false;
+        let timerInterval;
+        const studentName = sessionStorage.getItem('studentName') || 'Unknown';
+        const studentEmail = sessionStorage.getItem('studentEmail') || '';
+
+        function startTimer() {
+            let minutes = 10; let seconds = 0;
+            timerInterval = setInterval(() => {
+                if (seconds === 0) { if (minutes === 0) { clearInterval(timerInterval); alert('Time is up!'); submitTest(); return; } minutes--; seconds = 59; } else { seconds--; }
+                document.getElementById('timer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            dropdown.addEventListener('change', function() {
+                if (submitted) return;
+                const questionItem = this.closest('.question-item');
+                const questionNum = questionItem.dataset.question;
+                if (this.value) selectedAnswers[questionNum] = this.value;
+                if (Object.keys(selectedAnswers).length === 6) document.getElementById('submitBtn').disabled = false;
+            });
+        });
+
+        async function submitTest() {
+            if (Object.keys(selectedAnswers).length !== 6) { alert('Please answer all questions before submitting.'); return; }
+            if (!confirm('Are you sure you want to submit?')) return;
+            clearInterval(timerInterval);
+            submitted = true;
+            let correctCount = 0;
+            document.querySelectorAll('.question-item').forEach(item => {
+                const questionNum = item.dataset.question;
+                const correctAnswer = item.dataset.answer;
+                const userAnswer = selectedAnswers[questionNum];
+                const dropdown = item.querySelector('.dropdown');
+                const feedback = item.querySelector('.feedback');
+                dropdown.disabled = true;
+                if (userAnswer === correctAnswer) { correctCount++; item.classList.add('correct'); dropdown.classList.add('correct-answer'); feedback.textContent = '✓ Correct'; feedback.classList.add('correct', 'show'); }
+                else { item.classList.add('incorrect'); dropdown.classList.add('wrong-answer'); feedback.innerHTML = '✗ Incorrect <span class="correct-answer-text">→ Correct: ' + correctAnswer + '</span>'; feedback.classList.add('incorrect', 'show'); }
+            });
+            document.getElementById('submitBtn').disabled = true;
+            const submissionData = { timestamp: new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney' }), studentName, studentEmail, testType: 'Selective', testName: 'Penicillin Gap', score: correctCount, totalQuestions: 6, percentage: Math.round((correctCount / 6) * 100) };
+            try { await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(submissionData) }); } catch (error) { console.error('Error:', error); }
+            document.getElementById('scoreDisplay').textContent = `${correctCount}/6`;
+            document.getElementById('scoreMessage').textContent = `You scored ${Math.round((correctCount/6)*100)}%`;
+            document.getElementById('resultsModal').classList.add('show');
+        }
+
+        function goBack() { window.location.href = 'index.html'; }
+        function closeModal() { document.getElementById('resultsModal').classList.remove('show'); }
+        document.getElementById('submitBtn').disabled = true;
+        startTimer();
+    </script>
+</body>
+</html>
