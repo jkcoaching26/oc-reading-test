@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OC Gap Fill - Monarchs | JK Coaching College</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; line-height: 1.6; }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { font-size: 1.5rem; }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo svg { height: 40px; }
+        .logo-text { font-weight: bold; font-size: 1.1rem; }
+        
+        .timer-bar {
+            background: #2d5a87;
+            color: white;
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 20px;
+            border-radius: 5px;
+        }
+        .timer.warning { background: #e74c3c; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            background: #34495e;
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+        }
+        
+        .passage-content {
+            padding: 25px;
+            height: calc(100vh - 250px);
+            overflow-y: auto;
+            font-size: 1rem;
+        }
+        
+        .passage-content h2 {
+            color: #1e3a5f;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+        
+        .passage-content p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .gap {
+            display: inline;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        
+        .gap-number {
+            background: #3498db;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            margin-right: 5px;
+        }
+        
+        .sentences-box {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+        
+        .sentences-box h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        
+        .sentence-option {
+            display: flex;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .sentence-letter {
+            font-weight: bold;
+            color: #2980b9;
+            min-width: 30px;
+        }
+        
+        .questions-content {
+            padding: 25px;
+            height: calc(100vh - 250px);
+            overflow-y: auto;
+        }
+        
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .question.answered { border-left-color: #27ae60; }
+        .question.incorrect { border-left-color: #e74c3c; background: #fdf2f2; }
+        .question.correct { border-left-color: #27ae60; background: #f0fff4; }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .question-number {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .question select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .question select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .question select:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+        
+        .result-icon {
+            font-size: 1.2rem;
+            margin-left: 10px;
+        }
+        
+        .correct-answer {
+            color: #27ae60;
+            font-weight: bold;
+            margin-top: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .button-bar {
+            background: #ecf0f1;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary { background: #3498db; color: white; }
+        .btn-primary:hover { background: #2980b9; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-success:hover { background: #219a52; }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .btn-secondary:hover { background: #7f8c8d; }
+        .btn:disabled { background: #bdc3c7; cursor: not-allowed; }
+        
+        .progress-text { font-weight: bold; color: #2c3e50; }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        .modal h2 { color: #2c3e50; margin-bottom: 20px; }
+        .score-display { font-size: 3rem; font-weight: bold; color: #3498db; margin: 20px 0; }
+        .modal-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 25px; }
+        
+        @media (max-width: 1024px) {
+            .main-container { grid-template-columns: 1fr; }
+            .passage-content, .questions-content { height: auto; max-height: 50vh; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>OC Reading Comprehension - Gap Fill</h1>
+        <div class="logo">
+            <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="30" cy="30" r="28" fill="#1e3a5f" stroke="white" stroke-width="2"/>
+                <text x="30" y="35" text-anchor="middle" fill="white" font-family="Georgia, serif" font-size="16" font-weight="bold">JK</text>
+                <text x="30" y="48" text-anchor="middle" fill="white" font-family="Arial" font-size="6">COACHING</text>
+            </svg>
+            <span class="logo-text">JK Coaching College</span>
+        </div>
+    </div>
+    
+    <div class="timer-bar">
+        <span>Time Remaining</span>
+        <div class="timer" id="timer">08:00</div>
+    </div>
+    
+    <div class="main-container">
+        <div class="panel">
+            <div class="panel-header">Reading Passage</div>
+            <div class="passage-content">
+                <h2>The Migration of Monarch Butterflies</h2>
+                
+                <p>Each autumn, something extraordinary happens across the forests and meadows of North America. Hundreds of millions of monarch butterflies abandon their summer feeding grounds and set off on a journey of up to four thousand kilometres, converging on a small cluster of forests in the mountains of central Mexico. They have never made this journey before. The forest where they are headed is one they have never seen. Yet, with remarkable consistency, they arrive.</p>
+                
+                <p>For decades, the destination of North America's monarch butterflies was one of the great unsolved mysteries of the natural world. The zoologist Dr Fred Urquhart dedicated much of his career to finding it. Working alongside him was his wife Norah, whose contribution to the search proved decisive. <span class="gap"><span class="gap-number">12</span> .....................</span> By 1975, more than three thousand volunteers across North America were participating in the tagging programme, and reports were arriving from every corner of the continent. It was one of these reports, from a volunteer in Mexico, that finally led the Urquharts to the overwintering site in 1976: a mountainside in Michoacán, blanketed in orange and black.</p>
+                
+                <p><span class="gap"><span class="gap-number">13</span> .....................</span> What researchers have since discovered about the monarch's navigation system has forced them to reconsider that assumption entirely. Scientists have established that monarchs use the position of the sun as their primary compass, relying on what is known as a time-compensated sun compass, built around an internal clock located in their antennae. <span class="gap"><span class="gap-number">14</span> .....................</span> Researchers have also found evidence that monarchs are sensitive to the Earth's magnetic field, which may provide a back-up system when cloud cover makes the sun unavailable. <span class="gap"><span class="gap-number">15</span> .....................</span> The problem, researchers note, is not merely theoretical. Monarchs that are artificially displaced hundreds of kilometres from their usual route still manage to correct their course and arrive at the overwintering site in Michoacán.</p>
+                
+                <p>Over four decades of tagging data, collected from hundreds of thousands of individual butterflies, have revealed patterns that continue to surprise researchers. <span class="gap"><span class="gap-number">16</span> .....................</span> One butterfly, tagged in Ontario and recovered seven months later in a forest in Michoacán, had covered a distance of more than four thousand kilometres — a journey that researchers described as, mile for mile, equivalent to a human being walking from London to the surface of the Moon. <span class="gap"><span class="gap-number">17</span> .....................</span></p>
+                
+                <p>The monarch's migration is now considered one of the most endangered natural phenomena on Earth. Milkweed, the only plant on which monarchs lay their eggs, has declined sharply across North America as agricultural land has been treated with herbicides. The forests of Michoacán, where the butterflies overwinter, are threatened by illegal logging. The journey continues, for now. Whether it will do so indefinitely remains uncertain.</p>
+                
+                <div class="sentences-box">
+                    <h3>Choose from sentences A–G:</h3>
+                    <div class="sentence-option"><span class="sentence-letter">A</span> Yet despite these impressive capabilities, researchers have so far been unable to explain how the butterflies navigate with such precision once the familiar landmarks of their summer range have been left behind.</div>
+                    <div class="sentence-option"><span class="sentence-letter">B</span> As well as this, the butterflies have been observed pausing to feed on nectar from flowering plants along the route, a behaviour that appears to help them accumulate the energy reserves needed for the longest stages of the journey.</div>
+                    <div class="sentence-option"><span class="sentence-letter">C</span> She had spent three years developing a system for following individual butterflies, attaching tiny numbered tags to their wings and recording where each one was released and where it was later found.</div>
+                    <div class="sentence-option"><span class="sentence-letter">D</span> Not only had the research transformed scientific understanding of insect navigation, it had also raised urgent questions about the future of the migration itself.</div>
+                    <div class="sentence-option"><span class="sentence-letter">E</span> This internal clock allows the butterfly to calculate its direction by measuring the angle of the sun against the time of day.</div>
+                    <div class="sentence-option"><span class="sentence-letter">F</span> Even so, scientists had long assumed that an insect with a brain the size of a grain of rice could not possess the cognitive machinery required for such a journey.</div>
+                    <div class="sentence-option"><span class="sentence-letter">G</span> Individual monarchs tracked across multiple seasons showed striking differences in the timing and route of their migration, suggesting that local conditions and prior experience may play a larger role than previously recognised.</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <div class="panel-header">Questions 12–17</div>
+            <div class="questions-content">
+                <div class="question" id="q12">
+                    <div class="question-header">
+                        <span class="question-number">Question 12</span>
+                        <span class="result-icon" id="result12"></span>
+                    </div>
+                    <select id="answer12" onchange="checkAnswered()">
+                        <option value="">Select answer...</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                    <div class="correct-answer" id="correct12"></div>
+                </div>
+                
+                <div class="question" id="q13">
+                    <div class="question-header">
+                        <span class="question-number">Question 13</span>
+                        <span class="result-icon" id="result13"></span>
+                    </div>
+                    <select id="answer13" onchange="checkAnswered()">
+                        <option value="">Select answer...</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                    <div class="correct-answer" id="correct13"></div>
+                </div>
+                
+                <div class="question" id="q14">
+                    <div class="question-header">
+                        <span class="question-number">Question 14</span>
+                        <span class="result-icon" id="result14"></span>
+                    </div>
+                    <select id="answer14" onchange="checkAnswered()">
+                        <option value="">Select answer...</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                    <div class="correct-answer" id="correct14"></div>
+                </div>
+                
+                <div class="question" id="q15">
+                    <div class="question-header">
+                        <span class="question-number">Question 15</span>
+                        <span class="result-icon" id="result15"></span>
+                    </div>
+                    <select id="answer15" onchange="checkAnswered()">
+                        <option value="">Select answer...</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                    <div class="correct-answer" id="correct15"></div>
+                </div>
+                
+                <div class="question" id="q16">
+                    <div class="question-header">
+                        <span class="question-number">Question 16</span>
+                        <span class="result-icon" id="result16"></span>
+                    </div>
+                    <select id="answer16" onchange="checkAnswered()">
+                        <option value="">Select answer...</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                    <div class="correct-answer" id="correct16"></div>
+                </div>
+                
+                <div class="question" id="q17">
+                    <div class="question-header">
+                        <span class="question-number">Question 17</span>
+                        <span class="result-icon" id="result17"></span>
+                    </div>
+                    <select id="answer17" onchange="checkAnswered()">
+                        <option value="">Select answer...</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                    <div class="correct-answer" id="correct17"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="button-bar">
+        <button class="btn btn-secondary" onclick="window.location.href='index.html'">← Back to Menu</button>
+        <span class="progress-text" id="progress">Answered: 0 / 6</span>
+        <button class="btn btn-success" id="submitBtn" onclick="submitTest()">Submit Answers</button>
+    </div>
+    
+    <div class="modal-overlay" id="resultModal">
+        <div class="modal">
+            <h2>Test Complete!</h2>
+            <div class="score-display" id="scoreDisplay">0 / 6</div>
+            <p id="scoreMessage"></p>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="closeModal()">Close & Review Answers</button>
+                <button class="btn btn-secondary" onclick="window.location.href='index.html'">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const correctAnswers = {
+            12: 'C',
+            13: 'F',
+            14: 'E',
+            15: 'A',
+            16: 'G',
+            17: 'D'
+        };
+        
+        let timeLeft = 8 * 60;
+        let timerInterval;
+        let submitted = false;
+        
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                    return;
+                }
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                if (timeLeft <= 60) {
+                    document.getElementById('timer').classList.add('warning');
+                }
+            }, 1000);
+        }
+        
+        function checkAnswered() {
+            let answered = 0;
+            for (let i = 12; i <= 17; i++) {
+                if (document.getElementById(`answer${i}`).value) {
+                    answered++;
+                    document.getElementById(`q${i}`).classList.add('answered');
+                } else {
+                    document.getElementById(`q${i}`).classList.remove('answered');
+                }
+            }
+            document.getElementById('progress').textContent = `Answered: ${answered} / 6`;
+        }
+        
+        function submitTest() {
+            if (submitted) return;
+            submitted = true;
+            clearInterval(timerInterval);
+            
+            let score = 0;
+            
+            for (let i = 12; i <= 17; i++) {
+                const select = document.getElementById(`answer${i}`);
+                const userAnswer = select.value;
+                const correct = correctAnswers[i];
+                const questionDiv = document.getElementById(`q${i}`);
+                const resultIcon = document.getElementById(`result${i}`);
+                const correctDiv = document.getElementById(`correct${i}`);
+                
+                select.disabled = true;
+                
+                if (userAnswer === correct) {
+                    score++;
+                    questionDiv.classList.remove('answered');
+                    questionDiv.classList.add('correct');
+                    resultIcon.textContent = '✓ Correct';
+                    resultIcon.style.color = '#27ae60';
+                } else {
+                    questionDiv.classList.remove('answered');
+                    questionDiv.classList.add('incorrect');
+                    resultIcon.textContent = '✗ Incorrect';
+                    resultIcon.style.color = '#e74c3c';
+                    correctDiv.textContent = `Correct answer: ${correct}`;
+                }
+            }
+            
+            document.getElementById('scoreDisplay').textContent = `${score} / 6`;
+            
+            let message = '';
+            if (score === 6) message = 'Perfect score! Excellent work! 🎉';
+            else if (score >= 5) message = 'Great job! Almost perfect! 👏';
+            else if (score >= 4) message = 'Good effort! Keep practising! 👍';
+            else if (score >= 3) message = 'Not bad! Review the passage carefully. 📚';
+            else message = 'Keep practising! Read the connections between sentences. 💪';
+            
+            document.getElementById('scoreMessage').textContent = message;
+            document.getElementById('resultModal').style.display = 'flex';
+            document.getElementById('submitBtn').disabled = true;
+            
+            saveScore(score);
+        }
+        
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+        
+        function saveScore(score) {
+            const data = {
+                timestamp: new Date().toISOString(),
+                test: 'OC Gap Fill - Monarchs',
+                score: score,
+                total: 6
+            };
+            const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+            if (scriptURL !== 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
+                fetch(scriptURL, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: { 'Content-Type': 'application/json' }
+                }).catch(err => console.log('Score save error:', err));
+            }
+        }
+        
+        startTimer();
+    </script>
+</body>
+</html>

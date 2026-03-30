@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selective Poetry - To A Butterfly | JK Coaching College</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; line-height: 1.6; }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { font-size: 1.5rem; }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo svg { height: 40px; }
+        .logo-text { font-weight: bold; font-size: 1.1rem; }
+        
+        .timer-bar {
+            background: #2d5a87;
+            color: white;
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 20px;
+            border-radius: 5px;
+        }
+        .timer.warning { background: #e74c3c; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            background: #34495e;
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+        }
+        
+        .poem-content {
+            padding: 30px;
+            height: calc(100vh - 250px);
+            overflow-y: auto;
+        }
+        
+        .poem-title {
+            color: #1e3a5f;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .poem-author {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 25px;
+        }
+        
+        .poem-text {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .poem-line {
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .stanza {
+            margin-bottom: 25px;
+        }
+        
+        .questions-content {
+            padding: 20px;
+            height: calc(100vh - 250px);
+            overflow-y: auto;
+        }
+        
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .question.answered { border-left-color: #27ae60; }
+        .question.incorrect { border-left-color: #e74c3c; background: #fdf2f2; }
+        .question.correct { border-left-color: #27ae60; background: #f0fff4; }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .question-number {
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 30px;
+        }
+        
+        .question-text {
+            flex: 1;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        
+        .options label {
+            display: block;
+            padding: 10px 12px;
+            margin-bottom: 6px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .options label:hover {
+            border-color: #3498db;
+            background: #f0f7ff;
+        }
+        
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .options label.selected {
+            border-color: #3498db;
+            background: #e8f4fc;
+        }
+        
+        .options label.correct-option {
+            border-color: #27ae60;
+            background: #e8f8f0;
+        }
+        
+        .options label.incorrect-option {
+            border-color: #e74c3c;
+            background: #fdf2f2;
+        }
+        
+        .result-icon {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .correct-answer {
+            color: #27ae60;
+            font-weight: bold;
+            margin-top: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .button-bar {
+            background: #ecf0f1;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary { background: #3498db; color: white; }
+        .btn-primary:hover { background: #2980b9; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-success:hover { background: #219a52; }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .btn-secondary:hover { background: #7f8c8d; }
+        .btn:disabled { background: #bdc3c7; cursor: not-allowed; }
+        
+        .progress-text { font-weight: bold; color: #2c3e50; }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        .modal h2 { color: #2c3e50; margin-bottom: 20px; }
+        .score-display { font-size: 3rem; font-weight: bold; color: #3498db; margin: 20px 0; }
+        .modal-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 25px; }
+        
+        @media (max-width: 1024px) {
+            .main-container { grid-template-columns: 1fr; }
+            .poem-content, .questions-content { height: auto; max-height: 50vh; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Selective Reading Comprehension - Poetry</h1>
+        <div class="logo">
+            <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="30" cy="30" r="28" fill="#1e3a5f" stroke="white" stroke-width="2"/>
+                <text x="30" y="35" text-anchor="middle" fill="white" font-family="Georgia, serif" font-size="16" font-weight="bold">JK</text>
+                <text x="30" y="48" text-anchor="middle" fill="white" font-family="Arial" font-size="6">COACHING</text>
+            </svg>
+            <span class="logo-text">JK Coaching College</span>
+        </div>
+    </div>
+    
+    <div class="timer-bar">
+        <span>Time Remaining</span>
+        <div class="timer" id="timer">11:00</div>
+    </div>
+    
+    <div class="main-container">
+        <div class="panel">
+            <div class="panel-header">Poem</div>
+            <div class="poem-content">
+                <div class="poem-title">To A Butterfly</div>
+                <div class="poem-author">by William Wordsworth</div>
+                
+                <div class="poem-text">
+                    <div class="stanza">
+                        <span class="poem-line">STAY near me—do not take thy flight!</span>
+                        <span class="poem-line">A little longer stay in sight!</span>
+                        <span class="poem-line">Much converse do I find I thee,</span>
+                        <span class="poem-line">Historian of my infancy!</span>
+                        <span class="poem-line">Float near me; do not yet depart!</span>
+                        <span class="poem-line">Dead times revive in thee:</span>
+                        <span class="poem-line">Thou bring'st, gay creature as thou art!</span>
+                        <span class="poem-line">A solemn image to my heart,</span>
+                        <span class="poem-line">My father's family!</span>
+                    </div>
+                    
+                    <div class="stanza">
+                        <span class="poem-line">Oh! pleasant, pleasant were the days,</span>
+                        <span class="poem-line">The time, when, in our childish plays,</span>
+                        <span class="poem-line">My sister Emmeline and I</span>
+                        <span class="poem-line">Together chased the butterfly!</span>
+                        <span class="poem-line">A very hunter did I rush</span>
+                        <span class="poem-line">Upon the prey:—with leaps and spring</span>
+                        <span class="poem-line">I followed on from brake to bush;</span>
+                        <span class="poem-line">But she, God love her, feared to brush</span>
+                        <span class="poem-line">The dust from off its wings.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <div class="panel-header">Questions 9–18</div>
+            <div class="questions-content" id="questionsContainer">
+            </div>
+        </div>
+    </div>
+    
+    <div class="button-bar">
+        <button class="btn btn-secondary" onclick="window.location.href='index.html'">← Back to Menu</button>
+        <span class="progress-text" id="progress">Answered: 0 / 10</span>
+        <button class="btn btn-success" id="submitBtn" onclick="submitTest()">Submit Answers</button>
+    </div>
+    
+    <div class="modal-overlay" id="resultModal">
+        <div class="modal">
+            <h2>Test Complete!</h2>
+            <div class="score-display" id="scoreDisplay">0 / 10</div>
+            <p id="scoreMessage"></p>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="closeModal()">Close & Review Answers</button>
+                <button class="btn btn-secondary" onclick="window.location.href='index.html'">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const questions = [
+            {
+                num: 9,
+                text: "The repeated pleas 'Stay near me' and 'do not yet depart' in the first stanza mainly",
+                options: [
+                    "A) show the speaker wishing to prolong the butterfly's presence because it awakens the past",
+                    "B) suggest the speaker fears the butterfly's movement will break the stillness of the scene",
+                    "C) imply the speaker is addressing the butterfly as if it could understand and obey",
+                    "D) create a tone of urgency, as though the speaker has only one brief chance to observe it"
+                ],
+                correct: "A"
+            },
+            {
+                num: 10,
+                text: "'Historian of my infancy' is mainly significant because it",
+                options: [
+                    "A) presents the butterfly as a witness from the speaker's childhood world",
+                    "B) suggests the butterfly has remained unchanged while the speaker has grown older",
+                    "C) gives the butterfly the role of preserving and recalling the speaker's earliest memories",
+                    "D) implies the speaker's sense of the past depends more on imagination than on fact"
+                ],
+                correct: "C"
+            },
+            {
+                num: 11,
+                text: "'Dead times revive in thee' is mainly significant because it",
+                options: [
+                    "A) presents the butterfly as the means by which the speaker's past becomes vividly present again",
+                    "B) suggests the butterfly belongs to a vanished world and so seems touched by death itself",
+                    "C) implies that the speaker's childhood now feels distant enough to seem almost unreal",
+                    "D) shows that memories of childhood return only when the speaker is alone with nature"
+                ],
+                correct: "A"
+            },
+            {
+                num: 12,
+                text: "'Thou bring'st, gay creature as thou art! / A solemn image to my heart' is mainly significant because it",
+                options: [
+                    "A) shows the butterfly is cheerful in appearance but carries disease or danger to those it visits",
+                    "B) implies the speaker is embarrassed to be moved by something as trivial as a butterfly",
+                    "C) suggests the speaker's heart has grown so heavy that it cannot receive joy even from a joyful creature",
+                    "D) a joyful creature carrying a solemn memory — lightness and gravity held together"
+                ],
+                correct: "D"
+            },
+            {
+                num: 13,
+                text: "'My father's family' at the close of the first stanza is mainly significant because it",
+                options: [
+                    "A) broadens the memory from a private childhood moment to a larger family past",
+                    "B) suggests the butterfly recalls a childhood shaped especially by the speaker's father",
+                    "C) shows that the speaker values family memory more than the butterfly itself",
+                    "D) implies that the past returns most powerfully through thoughts of lost relatives"
+                ],
+                correct: "A"
+            },
+            {
+                num: 14,
+                text: "The poem moves from the direct address of the first stanza to the childhood memory of the second. This shift mainly",
+                options: [
+                    "A) shows the speaker giving up on the butterfly and retreating into private thought",
+                    "B) suggests the speaker can only remember the past when the butterfly is no longer present",
+                    "C) the second stanza as the answer to the first — the memory that explains the plea",
+                    "D) creates a contrast between the calm present and the energetic past, showing how much the speaker has changed"
+                ],
+                correct: "C"
+            },
+            {
+                num: 15,
+                text: "'A very hunter did I rush / Upon the prey' is mainly significant because it",
+                options: [
+                    "A) shows the speaker once approached nature with excitement and pursuit rather than restraint",
+                    "B) suggests the speaker's childhood pleasure came chiefly from possessing what was pursued",
+                    "C) implies the speaker now judges that earlier eagerness as morally mistaken",
+                    "D) contrasts the speaker's active pursuit with the butterfly's fragility, making the chase seem threatening"
+                ],
+                correct: "A"
+            },
+            {
+                num: 16,
+                text: "The contrast between the speaker's pursuit and Emmeline's fear of brushing the butterfly's wings mainly suggests",
+                options: [
+                    "A) that the sister was timid and fearful while the speaker was brave and adventurous",
+                    "B) that the two children had very different personalities that led to conflict between them",
+                    "C) that the speaker valued catching the butterfly while Emmeline preferred to watch it from a distance",
+                    "D) two different relationships with the natural world — one eager to possess, one instinctively reverent"
+                ],
+                correct: "D"
+            },
+            {
+                num: 17,
+                text: "The phrase 'God love her' inserted into the description of Emmeline is mainly significant because it",
+                options: [
+                    "A) adds a note of tenderness that suggests the speaker is looking back on someone absent or lost",
+                    "B) gives the memory the sound of spontaneous affection rather than detached narration",
+                    "C) implies the speaker now values Emmeline's gentleness more than their own childhood excitement",
+                    "D) introduces a religious tone that links Emmeline directly with the blessing at the poem's close"
+                ],
+                correct: "A"
+            },
+            {
+                num: 18,
+                text: "The poem as a whole mainly suggests",
+                options: [
+                    "A) the natural world offers comfort to those grieving by reminding them that life continues unchanged",
+                    "B) childhood memories of play and freedom are always more vivid than the memories of adult life",
+                    "C) a lost world of people and times the speaker is reluctant to release",
+                    "D) the difference between the speaker and his sister reveals that sensitivity to nature is a rare and inherited quality"
+                ],
+                correct: "C"
+            }
+        ];
+        
+        const correctAnswers = {};
+        questions.forEach(q => correctAnswers[q.num] = q.correct);
+        
+        let timeLeft = 11 * 60;
+        let timerInterval;
+        let submitted = false;
+        
+        function generateQuestions() {
+            const container = document.getElementById('questionsContainer');
+            questions.forEach(q => {
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.id = `q${q.num}`;
+                div.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">${q.num}</span>
+                        <span class="result-icon" id="result${q.num}"></span>
+                    </div>
+                    <div class="question-text">${q.text}</div>
+                    <div class="options" id="options${q.num}">
+                        ${q.options.map((opt, i) => `
+                            <label id="label${q.num}_${String.fromCharCode(65+i)}">
+                                <input type="radio" name="q${q.num}" value="${String.fromCharCode(65+i)}" onchange="checkAnswered()">
+                                <span>${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="correct-answer" id="correct${q.num}"></div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                    return;
+                }
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                if (timeLeft <= 60) {
+                    document.getElementById('timer').classList.add('warning');
+                }
+            }, 1000);
+        }
+        
+        function checkAnswered() {
+            let answered = 0;
+            questions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.num}"]:checked`);
+                if (selected) {
+                    answered++;
+                    document.getElementById(`q${q.num}`).classList.add('answered');
+                } else {
+                    document.getElementById(`q${q.num}`).classList.remove('answered');
+                }
+            });
+            document.getElementById('progress').textContent = `Answered: ${answered} / 10`;
+        }
+        
+        function submitTest() {
+            if (submitted) return;
+            submitted = true;
+            clearInterval(timerInterval);
+            
+            let score = 0;
+            
+            questions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.num}"]:checked`);
+                const userAnswer = selected ? selected.value : '';
+                const correct = correctAnswers[q.num];
+                const questionDiv = document.getElementById(`q${q.num}`);
+                const resultIcon = document.getElementById(`result${q.num}`);
+                const correctDiv = document.getElementById(`correct${q.num}`);
+                
+                document.querySelectorAll(`input[name="q${q.num}"]`).forEach(input => {
+                    input.disabled = true;
+                });
+                
+                if (userAnswer === correct) {
+                    score++;
+                    questionDiv.classList.remove('answered');
+                    questionDiv.classList.add('correct');
+                    resultIcon.textContent = '✓ Correct';
+                    resultIcon.style.color = '#27ae60';
+                    document.getElementById(`label${q.num}_${correct}`).classList.add('correct-option');
+                } else {
+                    questionDiv.classList.remove('answered');
+                    questionDiv.classList.add('incorrect');
+                    resultIcon.textContent = '✗ Incorrect';
+                    resultIcon.style.color = '#e74c3c';
+                    correctDiv.textContent = `Correct answer: ${correct}`;
+                    if (userAnswer) {
+                        document.getElementById(`label${q.num}_${userAnswer}`).classList.add('incorrect-option');
+                    }
+                    document.getElementById(`label${q.num}_${correct}`).classList.add('correct-option');
+                }
+            });
+            
+            document.getElementById('scoreDisplay').textContent = `${score} / 10`;
+            
+            let message = '';
+            if (score === 10) message = 'Perfect score! Outstanding! 🎉';
+            else if (score >= 8) message = 'Excellent work! 👏';
+            else if (score >= 6) message = 'Good effort! Keep practising! 👍';
+            else if (score >= 4) message = 'Review the poem and question patterns. 📚';
+            else message = 'Keep practising! Focus on what the words suggest. 💪';
+            
+            document.getElementById('scoreMessage').textContent = message;
+            document.getElementById('resultModal').style.display = 'flex';
+            document.getElementById('submitBtn').disabled = true;
+            
+            saveScore(score);
+        }
+        
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+        
+        function saveScore(score) {
+            const data = {
+                timestamp: new Date().toISOString(),
+                test: 'Selective Poetry - To A Butterfly',
+                score: score,
+                total: 10
+            };
+            const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+            if (scriptURL !== 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
+                fetch(scriptURL, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: { 'Content-Type': 'application/json' }
+                }).catch(err => console.log('Score save error:', err));
+            }
+        }
+        
+        generateQuestions();
+        startTimer();
+    </script>
+</body>
+</html>
