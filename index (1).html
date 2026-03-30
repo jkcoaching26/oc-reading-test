@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JK Coaching College - Reading Tests</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .logo-container { display: flex; justify-content: center; align-items: center; margin-bottom: 15px; }
+        .header h1 { color: white; font-size: 28px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .header p { color: rgba(255,255,255,0.9); font-size: 16px; }
+        .main-container { max-width: 1200px; margin: 0 auto; }
+        .page-title { text-align: center; color: white; font-size: 32px; margin-bottom: 30px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .columns-container { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+        .column { background: white; border-radius: 15px; padding: 25px; width: 480px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .column-header { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 3px solid #002855; }
+        .column-header h2 { color: #002855; font-size: 24px; margin-bottom: 5px; }
+        .column-header p { color: #666; font-size: 14px; }
+        .section-divider { background: #f0f4f8; padding: 8px 15px; margin: 15px -25px; font-weight: bold; color: #002855; font-size: 13px; border-left: 4px solid #002855; }
+        .test-item { background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 12px; cursor: pointer; transition: all 0.3s ease; }
+        .test-item:hover { border-color: #002855; background: #e8f4fc; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .test-item.new { position: relative; }
+        .test-item.new::after { content: 'NEW'; position: absolute; top: 10px; right: 10px; background: #e74c3c; color: white; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        .test-name { font-size: 16px; font-weight: bold; color: #002855; margin-bottom: 8px; }
+        .test-info { display: flex; gap: 15px; font-size: 13px; color: #666; }
+        .test-info span { display: flex; align-items: center; gap: 5px; }
+        .footer { text-align: center; margin-top: 30px; color: rgba(255,255,255,0.8); font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <svg width="200" height="50" viewBox="0 0 400 80">
+                <rect x="5" y="5" width="50" height="60" rx="8" fill="white"/>
+                <text x="12" y="50" font-family="Arial" font-size="36" font-weight="bold" fill="#002855">JK</text>
+                <text x="65" y="35" font-family="Arial" font-size="26" font-weight="bold" fill="white">JK COACHING</text>
+                <text x="65" y="60" font-family="Arial" font-size="26" font-weight="bold" fill="white">COLLEGE</text>
+            </svg>
+        </div>
+        <p>NSW OC & Selective Reading Comprehension Practice</p>
+    </div>
+
+    <div class="main-container">
+        <h1 class="page-title">Select Your Test</h1>
+        
+        <div class="columns-container">
+            <!-- OC Column -->
+            <div class="column">
+                <div class="column-header">
+                    <h2>OC (Year 4)</h2>
+                    <p>Extract Matching & Gap Fill</p>
+                </div>
+                
+                <div class="section-divider">📖 EXTRACT MATCHING</div>
+                
+                <div class="test-item" onclick="startTest('oc-fire.html')">
+                    <div class="test-name">Set 1: Fire Extract</div>
+                    <div class="test-info">
+                        <span>⏱ 11 min</span>
+                        <span>Q18-25 (8 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item" onclick="startTest('oc-time.html')">
+                    <div class="test-name">Set 2: Time Extract</div>
+                    <div class="test-info">
+                        <span>⏱ 11:30 min</span>
+                        <span>Q18-25 (8 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item" onclick="startTest('oc-transport.html')">
+                    <div class="test-name">Set 3: Transport Extract</div>
+                    <div class="test-info">
+                        <span>⏱ 11:30 min</span>
+                        <span>Q18-25 (8 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item" onclick="startTest('oc-water.html')">
+                    <div class="test-name">Set 4: Water Extract</div>
+                    <div class="test-info">
+                        <span>⏱ 11 min</span>
+                        <span>Q18-25 (8 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="section-divider">📝 GAP FILL</div>
+                
+                <div class="test-item" onclick="startTest('oc-flyingmachines.html')">
+                    <div class="test-name">Set 5: Flying Machines Gap</div>
+                    <div class="test-info">
+                        <span>⏱ 8 min</span>
+                        <span>Q12-17 (6 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item" onclick="startTest('oc-crows.html')">
+                    <div class="test-name">Set 6: Crows Gap</div>
+                    <div class="test-info">
+                        <span>⏱ 8 min</span>
+                        <span>Q12-17 (6 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item" onclick="startTest('oc-elephants.html')">
+                    <div class="test-name">Set 7: Elephants Gap</div>
+                    <div class="test-info">
+                        <span>⏱ 8 min</span>
+                        <span>Q12-17 (6 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item" onclick="startTest('oc-penicillin.html')">
+                    <div class="test-name">Set 8: Penicillin Gap</div>
+                    <div class="test-info">
+                        <span>⏱ 8 min</span>
+                        <span>Q12-17 (6 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item new" onclick="startTest('oc-monarchs.html')">
+                    <div class="test-name">Set 9: Monarchs Gap</div>
+                    <div class="test-info">
+                        <span>⏱ 8 min</span>
+                        <span>Q12-17 (6 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item new" onclick="startTest('oc-salt.html')">
+                    <div class="test-name">Set 10: Salt Gap</div>
+                    <div class="test-info">
+                        <span>⏱ 8 min</span>
+                        <span>Q12-17 (6 questions)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Selective Column -->
+            <div class="column">
+                <div class="column-header">
+                    <h2>Selective (Year 6)</h2>
+                    <p>Poetry & Extract Matching</p>
+                </div>
+                
+                <div class="section-divider">🎭 POETRY</div>
+                
+                <div class="test-item" onclick="startTest('selective-frost.html')">
+                    <div class="test-name">Set 1: Frost Poetry</div>
+                    <div class="test-info">
+                        <span>⏱ 11 min</span>
+                        <span>Q9-18 (10 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item" onclick="startTest('selective-butterfly.html')">
+                    <div class="test-name">Set 2: Butterfly Poetry</div>
+                    <div class="test-info">
+                        <span>⏱ 11 min</span>
+                        <span>Q9-18 (10 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item new" onclick="startTest('selective-mangrove.html')">
+                    <div class="test-name">Set 3: Mangrove Poetry</div>
+                    <div class="test-info">
+                        <span>⏱ 11 min</span>
+                        <span>Q9-18 (10 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item new" onclick="startTest('selective-ozymandias.html')">
+                    <div class="test-name">Set 4: Ozymandias Poetry</div>
+                    <div class="test-info">
+                        <span>⏱ 11 min</span>
+                        <span>Q9-18 (10 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="section-divider">📖 EXTRACT MATCHING</div>
+                
+                <div class="test-item" onclick="startTest('selective-language.html')">
+                    <div class="test-name">Set 4: Language Extract</div>
+                    <div class="test-info">
+                        <span>⏱ 12 min</span>
+                        <span>Q21-30 (10 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item" onclick="startTest('selective-memory.html')">
+                    <div class="test-name">Set 5: Memory Extract</div>
+                    <div class="test-info">
+                        <span>⏱ 12:30 min</span>
+                        <span>Q21-30 (10 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item" onclick="startTest('selective-naturalworld.html')">
+                    <div class="test-name">Set 6: Natural World Extract</div>
+                    <div class="test-info">
+                        <span>⏱ 12:30 min</span>
+                        <span>Q21-30 (10 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item" onclick="startTest('selective-change.html')">
+                    <div class="test-name">Set 7: Change Extract</div>
+                    <div class="test-info">
+                        <span>⏱ 12 min</span>
+                        <span>Q21-30 (10 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item" onclick="startTest('selective-graphicnovels.html')">
+                    <div class="test-name">Set 8: Graphic Novels Extract</div>
+                    <div class="test-info">
+                        <span>⏱ 12 min</span>
+                        <span>Q21-30 (10 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="section-divider">📝 GAP FILL</div>
+                
+                <div class="test-item" onclick="startTest('selective-elephants.html')">
+                    <div class="test-name">Set 9: Elephants Gap</div>
+                    <div class="test-info">
+                        <span>⏱ 10 min</span>
+                        <span>Q12-17 (6 questions)</span>
+                    </div>
+                </div>
+                
+                <div class="test-item" onclick="startTest('selective-penicillin.html')">
+                    <div class="test-name">Set 10: Penicillin Gap</div>
+                    <div class="test-info">
+                        <span>⏱ 10 min</span>
+                        <span>Q12-17 (6 questions)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 JK Coaching College. All rights reserved.</p>
+    </div>
+
+    <script>
+        function startTest(testFile) {
+            window.location.href = testFile;
+        }
+    </script>
+</body>
+</html>
