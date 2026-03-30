@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selective Poetry - Ozymandias | JK Coaching College</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; line-height: 1.6; }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { font-size: 1.5rem; }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo svg { height: 40px; }
+        .logo-text { font-weight: bold; font-size: 1.1rem; }
+        
+        .timer-bar {
+            background: #2d5a87;
+            color: white;
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 20px;
+            border-radius: 5px;
+        }
+        .timer.warning { background: #e74c3c; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            background: #34495e;
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+        }
+        
+        .poem-content {
+            padding: 30px;
+            height: calc(100vh - 250px);
+            overflow-y: auto;
+        }
+        
+        .poem-title {
+            color: #1e3a5f;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .poem-author {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 25px;
+        }
+        
+        .poem-text {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 1.1rem;
+            line-height: 1.9;
+        }
+        
+        .poem-line {
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .stanza {
+            margin-bottom: 25px;
+        }
+        
+        .questions-content {
+            padding: 20px;
+            height: calc(100vh - 250px);
+            overflow-y: auto;
+        }
+        
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .question.answered { border-left-color: #27ae60; }
+        .question.incorrect { border-left-color: #e74c3c; background: #fdf2f2; }
+        .question.correct { border-left-color: #27ae60; background: #f0fff4; }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .question-number {
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 30px;
+        }
+        
+        .question-text {
+            flex: 1;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        
+        .options label {
+            display: block;
+            padding: 10px 12px;
+            margin-bottom: 6px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .options label:hover {
+            border-color: #3498db;
+            background: #f0f7ff;
+        }
+        
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .options label.selected {
+            border-color: #3498db;
+            background: #e8f4fc;
+        }
+        
+        .options label.correct-option {
+            border-color: #27ae60;
+            background: #e8f8f0;
+        }
+        
+        .options label.incorrect-option {
+            border-color: #e74c3c;
+            background: #fdf2f2;
+        }
+        
+        .result-icon {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .correct-answer {
+            color: #27ae60;
+            font-weight: bold;
+            margin-top: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .button-bar {
+            background: #ecf0f1;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary { background: #3498db; color: white; }
+        .btn-primary:hover { background: #2980b9; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-success:hover { background: #219a52; }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .btn-secondary:hover { background: #7f8c8d; }
+        .btn:disabled { background: #bdc3c7; cursor: not-allowed; }
+        
+        .progress-text { font-weight: bold; color: #2c3e50; }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        .modal h2 { color: #2c3e50; margin-bottom: 20px; }
+        .score-display { font-size: 3rem; font-weight: bold; color: #3498db; margin: 20px 0; }
+        .modal-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 25px; }
+        
+        @media (max-width: 1024px) {
+            .main-container { grid-template-columns: 1fr; }
+            .poem-content, .questions-content { height: auto; max-height: 50vh; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Selective Reading Comprehension - Poetry</h1>
+        <div class="logo">
+            <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="30" cy="30" r="28" fill="#1e3a5f" stroke="white" stroke-width="2"/>
+                <text x="30" y="35" text-anchor="middle" fill="white" font-family="Georgia, serif" font-size="16" font-weight="bold">JK</text>
+                <text x="30" y="48" text-anchor="middle" fill="white" font-family="Arial" font-size="6">COACHING</text>
+            </svg>
+            <span class="logo-text">JK Coaching College</span>
+        </div>
+    </div>
+    
+    <div class="timer-bar">
+        <span>Time Remaining</span>
+        <div class="timer" id="timer">11:00</div>
+    </div>
+    
+    <div class="main-container">
+        <div class="panel">
+            <div class="panel-header">Poem</div>
+            <div class="poem-content">
+                <div class="poem-title">Ozymandias</div>
+                <div class="poem-author">by Percy Bysshe Shelley (1792–1822)</div>
+                
+                <div class="poem-text">
+                    <div class="stanza">
+                        <span class="poem-line">I met a traveller from an antique land,</span>
+                        <span class="poem-line">Who said—"Two vast and trunkless legs of stone</span>
+                        <span class="poem-line">Stand in the desart. . . . Near them, on the sand,</span>
+                        <span class="poem-line">Half sunk a shattered visage lies, whose frown,</span>
+                        <span class="poem-line">And wrinkled lip, and sneer of cold command,</span>
+                        <span class="poem-line">Tell that its sculptor well those passions read</span>
+                        <span class="poem-line">Which yet survive, stamped on these lifeless things,</span>
+                        <span class="poem-line">The hand that mocked them, and the heart that fed;</span>
+                        <span class="poem-line">And on the pedestal, these words appear:</span>
+                        <span class="poem-line">My name is Ozymandias, King of Kings;</span>
+                        <span class="poem-line">Look on my Works, ye Mighty, and despair!</span>
+                        <span class="poem-line">Nothing beside remains. Round the decay</span>
+                        <span class="poem-line">Of that colossal Wreck, boundless and bare</span>
+                        <span class="poem-line">The lone and level sands stretch far away."</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <div class="panel-header">Questions 9–18</div>
+            <div class="questions-content" id="questionsContainer">
+            </div>
+        </div>
+    </div>
+    
+    <div class="button-bar">
+        <button class="btn btn-secondary" onclick="window.location.href='index.html'">← Back to Menu</button>
+        <span class="progress-text" id="progress">Answered: 0 / 10</span>
+        <button class="btn btn-success" id="submitBtn" onclick="submitTest()">Submit Answers</button>
+    </div>
+    
+    <div class="modal-overlay" id="resultModal">
+        <div class="modal">
+            <h2>Test Complete!</h2>
+            <div class="score-display" id="scoreDisplay">0 / 10</div>
+            <p id="scoreMessage"></p>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="closeModal()">Close & Review Answers</button>
+                <button class="btn btn-secondary" onclick="window.location.href='index.html'">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const questions = [
+            {
+                num: 9,
+                text: "The poem is told through a traveller's account rather than directly by the speaker. This structure mainly",
+                options: [
+                    "A) creates uncertainty — the speaker cannot verify what the traveller has described",
+                    "B) distances the speaker from the ruins, giving the poem the quality of a myth or legend",
+                    "C) places the ruins at a remove — reported, not witnessed, reaching the reader through layers of transmission",
+                    "D) suggests the desert is too remote for direct experience, making the ruins accessible only through report"
+                ],
+                correct: "C"
+            },
+            {
+                num: 10,
+                text: "'sneer of cold command' mainly suggests that",
+                options: [
+                    "A) the king's contempt was deeply ingrained — not assumed for display, but read from life",
+                    "B) the sculptor sharpened the king's expression to expose the cruelty beneath his rule",
+                    "C) power had gradually hardened the king's face into something inhuman",
+                    "D) the statue was designed to project fear rather than admiration"
+                ],
+                correct: "A"
+            },
+            {
+                num: 11,
+                text: "The word 'mocked' in 'The hand that mocked them' is mainly significant because it",
+                options: [
+                    "A) suggests the sculptor was laughing at the king while appearing to serve him",
+                    "B) shows the statue becoming a mockery once the works it celebrated have vanished",
+                    "C) implies the sculptor exaggerated the king's expression to make him appear ridiculous",
+                    "D) simultaneously a faithful record of the passions and a mockery of them"
+                ],
+                correct: "D"
+            },
+            {
+                num: 12,
+                text: "'Which yet survive, stamped on these lifeless things' is mainly significant because it",
+                options: [
+                    "A) the sculptor's craft outlasting the fame and power of the king it served",
+                    "B) the passions that drove a king survive only as expressions stamped on broken stone",
+                    "C) physical objects preserving human feeling more reliably than any written record",
+                    "D) the king's arrogance so absolute it demanded permanent material to contain it"
+                ],
+                correct: "B"
+            },
+            {
+                num: 13,
+                text: "'the heart that fed' mainly refers to",
+                options: [
+                    "A) the sculptor's inward response to the passions he was trying to represent",
+                    "B) the king's own inner force, which sustained the passions fixed in the statue",
+                    "C) the devotion of others, without which the king's power could not have endured",
+                    "D) the animating life of the kingdom that once gave meaning to the monument"
+                ],
+                correct: "B"
+            },
+            {
+                num: 14,
+                text: "'King of Kings' in the inscription is mainly significant because it",
+                options: [
+                    "A) represents the absolute peak of the king's self-proclaimed authority — a claim that the surrounding emptiness now answers",
+                    "B) indicates Ozymandias ruled over many other kings who paid him tribute during his lifetime",
+                    "C) echoes ancient titles of power, placing the king in a tradition of great rulers across history",
+                    "D) reflects the inscription writer's attempt to preserve the king's greatness after his death"
+                ],
+                correct: "A"
+            },
+            {
+                num: 15,
+                text: "'Look on my Works, ye Mighty, and despair!' is mainly significant because",
+                options: [
+                    "A) the king addressing future rulers as a warning against challenging his power",
+                    "B) 'ye Mighty' showing the king measured his greatness only against others who held power",
+                    "C) 'despair' revealing the king's intent to intimidate rather than merely impress",
+                    "D) the absent Works turning the command against itself — despair now comes from what is no longer there"
+                ],
+                correct: "D"
+            },
+            {
+                num: 16,
+                text: "'Nothing beside remains' is mainly significant as",
+                options: [
+                    "A) a neutral factual statement that balances the king's boastful inscription",
+                    "B) the poem's pivot — four words that collapse the entire claim of the inscription into silence",
+                    "C) the traveller's personal judgement on the king's legacy, delivered in understated form",
+                    "D) a transition that shifts the poem's focus from the statue's face to the surrounding landscape"
+                ],
+                correct: "B"
+            },
+            {
+                num: 17,
+                text: "'boundless and bare / The lone and level sands stretch far away' mainly",
+                options: [
+                    "A) enlarges the scale of the scene until the king's claim looks insignificant beside it",
+                    "B) makes the desert seem like the only true monument left standing after human power has gone",
+                    "C) sets what endures — the indifferent natural world — against the king's vanished Works",
+                    "D) shifts attention from the ruined statue to the emptiness that now defines its meaning"
+                ],
+                correct: "C"
+            },
+            {
+                num: 18,
+                text: "The poem as a whole mainly suggests",
+                options: [
+                    "A) the ambition of those who claim permanence is answered by time — what rulers build crumbles while the indifferent world continues",
+                    "B) great art outlasts the rulers it serves — the sculptor's skill survives where the king's power does not",
+                    "C) power corrupts those who hold it absolutely, leaving only a record of contempt and arrogance",
+                    "D) history reduces even the greatest rulers to ruins — and the poem mourns what is lost alongside what deserved to fall"
+                ],
+                correct: "A"
+            }
+        ];
+        
+        const correctAnswers = {};
+        questions.forEach(q => correctAnswers[q.num] = q.correct);
+        
+        let timeLeft = 11 * 60;
+        let timerInterval;
+        let submitted = false;
+        
+        function generateQuestions() {
+            const container = document.getElementById('questionsContainer');
+            questions.forEach(q => {
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.id = `q${q.num}`;
+                div.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">${q.num}</span>
+                        <span class="result-icon" id="result${q.num}"></span>
+                    </div>
+                    <div class="question-text">${q.text}</div>
+                    <div class="options" id="options${q.num}">
+                        ${q.options.map((opt, i) => `
+                            <label id="label${q.num}_${String.fromCharCode(65+i)}">
+                                <input type="radio" name="q${q.num}" value="${String.fromCharCode(65+i)}" onchange="checkAnswered()">
+                                <span>${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="correct-answer" id="correct${q.num}"></div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                    return;
+                }
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                if (timeLeft <= 60) {
+                    document.getElementById('timer').classList.add('warning');
+                }
+            }, 1000);
+        }
+        
+        function checkAnswered() {
+            let answered = 0;
+            questions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.num}"]:checked`);
+                if (selected) {
+                    answered++;
+                    document.getElementById(`q${q.num}`).classList.add('answered');
+                } else {
+                    document.getElementById(`q${q.num}`).classList.remove('answered');
+                }
+            });
+            document.getElementById('progress').textContent = `Answered: ${answered} / 10`;
+        }
+        
+        function submitTest() {
+            if (submitted) return;
+            submitted = true;
+            clearInterval(timerInterval);
+            
+            let score = 0;
+            
+            questions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.num}"]:checked`);
+                const userAnswer = selected ? selected.value : '';
+                const correct = correctAnswers[q.num];
+                const questionDiv = document.getElementById(`q${q.num}`);
+                const resultIcon = document.getElementById(`result${q.num}`);
+                const correctDiv = document.getElementById(`correct${q.num}`);
+                
+                document.querySelectorAll(`input[name="q${q.num}"]`).forEach(input => {
+                    input.disabled = true;
+                });
+                
+                if (userAnswer === correct) {
+                    score++;
+                    questionDiv.classList.remove('answered');
+                    questionDiv.classList.add('correct');
+                    resultIcon.textContent = '✓ Correct';
+                    resultIcon.style.color = '#27ae60';
+                    document.getElementById(`label${q.num}_${correct}`).classList.add('correct-option');
+                } else {
+                    questionDiv.classList.remove('answered');
+                    questionDiv.classList.add('incorrect');
+                    resultIcon.textContent = '✗ Incorrect';
+                    resultIcon.style.color = '#e74c3c';
+                    correctDiv.textContent = `Correct answer: ${correct}`;
+                    if (userAnswer) {
+                        document.getElementById(`label${q.num}_${userAnswer}`).classList.add('incorrect-option');
+                    }
+                    document.getElementById(`label${q.num}_${correct}`).classList.add('correct-option');
+                }
+            });
+            
+            document.getElementById('scoreDisplay').textContent = `${score} / 10`;
+            
+            let message = '';
+            if (score === 10) message = 'Perfect score! Outstanding! 🎉';
+            else if (score >= 8) message = 'Excellent work! 👏';
+            else if (score >= 6) message = 'Good effort! Keep practising! 👍';
+            else if (score >= 4) message = 'Review the poem and question patterns. 📚';
+            else message = 'Keep practising! Focus on what the words suggest. 💪';
+            
+            document.getElementById('scoreMessage').textContent = message;
+            document.getElementById('resultModal').style.display = 'flex';
+            document.getElementById('submitBtn').disabled = true;
+            
+            saveScore(score);
+        }
+        
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+        
+        function saveScore(score) {
+            const data = {
+                timestamp: new Date().toISOString(),
+                test: 'Selective Poetry - Ozymandias',
+                score: score,
+                total: 10
+            };
+            const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+            if (scriptURL !== 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
+                fetch(scriptURL, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: { 'Content-Type': 'application/json' }
+                }).catch(err => console.log('Score save error:', err));
+            }
+        }
+        
+        generateQuestions();
+        startTimer();
+    </script>
+</body>
+</html>
