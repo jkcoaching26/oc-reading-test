@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selective Extract - Country | JK Coaching College</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; line-height: 1.6; }
+        .header { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 1.5rem; }
+        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo svg { height: 40px; }
+        .logo-text { font-weight: bold; font-size: 1.1rem; }
+        .timer-bar { background: #2d5a87; color: white; padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .timer { font-size: 1.5rem; font-weight: bold; background: rgba(255,255,255,0.2); padding: 5px 20px; border-radius: 5px; }
+        .timer.warning { background: #e74c3c; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .main-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; }
+        .panel { background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
+        .panel-header { background: #34495e; color: white; padding: 15px 20px; font-weight: bold; }
+        .extracts-content { padding: 20px; height: calc(100vh - 250px); overflow-y: auto; }
+        .extract-tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+        .extract-tab { padding: 8px 20px; background: #e0e0e0; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .extract-tab.active { background: #3498db; color: white; }
+        .extract { display: none; }
+        .extract.active { display: block; }
+        .extract h3 { color: #1e3a5f; margin-bottom: 15px; }
+        .extract p { margin-bottom: 12px; text-align: justify; font-size: 0.95rem; }
+        .questions-content { padding: 20px; height: calc(100vh - 250px); overflow-y: auto; }
+        .question { margin-bottom: 15px; padding: 12px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #3498db; }
+        .question.answered { border-left-color: #27ae60; }
+        .question.incorrect { border-left-color: #e74c3c; background: #fdf2f2; }
+        .question.correct { border-left-color: #27ae60; background: #f0fff4; }
+        .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .question-number { font-weight: bold; color: #2c3e50; }
+        .question-text { margin-bottom: 10px; color: #333; font-size: 0.9rem; }
+        .question select { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; }
+        .question select:disabled { background: #f5f5f5; }
+        .result-icon { font-weight: bold; }
+        .correct-answer { color: #27ae60; font-weight: bold; margin-top: 6px; font-size: 0.85rem; }
+        .button-bar { background: #ecf0f1; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .btn { padding: 12px 30px; font-size: 1rem; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-primary { background: #3498db; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .btn:disabled { background: #bdc3c7; }
+        .progress-text { font-weight: bold; color: #2c3e50; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
+        .modal { background: white; padding: 40px; border-radius: 15px; text-align: center; max-width: 500px; }
+        .score-display { font-size: 3rem; font-weight: bold; color: #3498db; margin: 20px 0; }
+        .modal-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 25px; }
+        @media (max-width: 1024px) { .main-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="header"><h1>Selective Reading - Extract Matching</h1><div class="logo"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="28" fill="#1e3a5f" stroke="white" stroke-width="2"/><text x="30" y="35" text-anchor="middle" fill="white" font-family="Georgia" font-size="16" font-weight="bold">JK</text></svg><span class="logo-text">JK Coaching College</span></div></div>
+    <div class="timer-bar"><span>Time Remaining</span><div class="timer" id="timer">12:00</div></div>
+    <div class="main-container">
+        <div class="panel">
+            <div class="panel-header">Extracts: Country</div>
+            <div class="extracts-content">
+                <div class="extract-tabs">
+                    <button class="extract-tab active" onclick="showExtract('A')">A</button>
+                    <button class="extract-tab" onclick="showExtract('B')">B</button>
+                    <button class="extract-tab" onclick="showExtract('C')">C</button>
+                    <button class="extract-tab" onclick="showExtract('D')">D</button>
+                </div>
+                <div class="extract active" id="extractA"><h3>Extract A</h3><p>I left the town where I grew up at eighteen and told myself I had outgrown it. For twelve years I came back only when I had to — Christmas, a wedding, and now this. The paddocks along the highway had the same dry patience I remembered; the silos were still painted with the same faded mural of wheat. The main street had lost two shops and gained one. Almost nothing had changed.</p><p>I had expected this to feel like returning. It felt more like being watched. The place seemed to remember me in a way I had not prepared for, and I found myself moving through it carefully, the way you move through a room where something has been left exactly as it was.</p><p>At the funeral, an older woman I barely recognised said: 'You were always going to come back.' I had been about to correct her. But I stopped, because I was not completely sure she was wrong. I had spent twelve years building a life somewhere else, and the town had waited with what I could only describe as patience. Whether that was a comfort or a warning was something I still had not worked out by the time I drove back to the highway.</p></div>
+                <div class="extract" id="extractB"><h3>Extract B</h3><p>The countryside is not disappearing. It is being replaced by something that looks like it. Across parts of Britain, Europe and Australia, a movement known as rewilding is returning degraded farmland to native ecosystems — removing fences, reintroducing lost species, and allowing land that has been cropped or grazed for generations to revert. What emerges looks wild. In many cases, it is the most 'natural' landscape those regions have seen in centuries.</p><p>The paradox is that what people picture when they imagine the natural countryside — rolling hills, hedgerows, open pasture — is itself a product of centuries of human management. The ancient forests that once covered much of these regions were cleared long ago. The picturesque landscapes now considered worth preserving were shaped by ploughs, sheep and drainage channels, not left by nature alone.</p><p>Rewilding does not restore an original state because no single original state exists. It creates something new from the pieces that remain. Scientists working in this field are increasingly comfortable with this idea: that nature is not a fixed condition to be returned to, but a process that can be restarted wherever people choose to step back.</p></div>
+                <div class="extract" id="extractC"><h3>Extract C</h3><p>In the past decade, moving from the city to a rural town has become something many Australians speak of with genuine longing. They want space, quiet, a slower pace, a connection to the land that city life does not offer. The number of people actually making the move has grown steadily, and the towns receiving them have seen real changes as a result.</p><p>What those towns have also seen is the arrival of people who bring their expectations with them. Old buildings are renovated in ways that suit weekend visitors more than working families. Land prices rise. Farmers' markets replace hardware stores. The character that made a place appealing is gradually altered by the desire to preserve it. The newcomers, almost without exception, describe themselves as the ones who truly understand what the country is for.</p><p>The people who have lived in these towns for generations are rarely asked. They are, in many cases, still there — watching the transformation of the place they grew up in by people who moved there precisely because it had not yet been transformed. There is a particular kind of enthusiasm for the country that tends to leave it worse off than it found it.</p></div>
+                <div class="extract" id="extractD"><h3>Extract D</h3><p>In many Aboriginal Australian cultures, the word Country does not mean what the English word suggests. It is not a place you come from or a landscape you observe. Country is a living relationship — something that holds you as much as you hold it. To be 'on Country' is not simply to be standing on a piece of land. It is to be within a web of responsibilities, stories, and connections that extend to waterways, sky, plants, animals, and the generations who came before.</p><p>This understanding makes ownership, in the European legal sense, a difficult concept to apply. You cannot own a relationship. You can belong to a place; the place can belong to you; but these are not the same as the titles and boundaries that European law uses to describe land. For many Aboriginal peoples, the idea that land could be sold — transferred from one set of relationships to another — was not merely wrong. It was, in a fundamental sense, incomprehensible.</p><p>Land management authorities in several Australian states have begun incorporating this understanding into their work. Caring for Country programs, developed in partnership with Traditional Custodians, are now used to maintain ecosystems, manage fire, and protect waterways in ways that combine scientific knowledge with generations of accumulated practice.</p></div>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-header">Questions 21–30: Which writer...</div>
+            <div class="questions-content" id="questionsContainer"></div>
+        </div>
+    </div>
+    <div class="button-bar"><button class="btn btn-secondary" onclick="window.location.href='index.html'">← Back</button><span class="progress-text" id="progress">Answered: 0 / 10</span><button class="btn btn-success" id="submitBtn" onclick="submitTest()">Submit</button></div>
+    <div class="modal-overlay" id="resultModal"><div class="modal"><h2>Test Complete!</h2><div class="score-display" id="scoreDisplay">0 / 10</div><p id="scoreMessage"></p><div class="modal-buttons"><button class="btn btn-primary" onclick="closeModal()">Review</button><button class="btn btn-secondary" onclick="window.location.href='index.html'">Menu</button></div></div></div>
+    <script>
+        const questions = [
+            { num: 21, text: "argues that people moving to the country can end up changing it?", correct: "C" },
+            { num: 22, text: "explains that what we think of as natural landscape was often shaped by people?", correct: "B" },
+            { num: 23, text: "describes returning to a familiar place and finding the experience unexpected?", correct: "A" },
+            { num: 24, text: "explains that one understanding of country includes far more than just the land itself?", correct: "D" },
+            { num: 25, text: "suggests that a person's connection to a place can be hard to leave behind?", correct: "A" },
+            { num: 26, text: "describes a process by which land is being returned to an earlier condition?", correct: "B" },
+            { num: 27, text: "makes the point that those most concerned about protecting a place can also harm it?", correct: "C" },
+            { num: 28, text: "describes a way of relating to land that is based on connection rather than ownership?", correct: "D" },
+            { num: 29, text: "suggests that people's ideas about the country they move to are often mistaken?", correct: "C" },
+            { num: 30, text: "describes feeling unsettled by a place that had remained the same, rather than relieved?", correct: "A" }
+        ];
+        const correctAnswers = {}; questions.forEach(q => correctAnswers[q.num] = q.correct);
+        let timeLeft = 12 * 60, timerInterval, submitted = false;
+        function showExtract(letter) {
+            document.querySelectorAll('.extract').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll('.extract-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(`extract${letter}`).classList.add('active');
+            event.target.classList.add('active');
+        }
+        function generateQuestions() {
+            const container = document.getElementById('questionsContainer');
+            questions.forEach(q => {
+                const div = document.createElement('div');
+                div.className = 'question'; div.id = `q${q.num}`;
+                div.innerHTML = `<div class="question-header"><span class="question-number">Q${q.num}</span><span class="result-icon" id="result${q.num}"></span></div><div class="question-text">${q.text}</div><select id="answer${q.num}" onchange="checkAnswered()"><option value="">Select...</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select><div class="correct-answer" id="correct${q.num}"></div>`;
+                container.appendChild(div);
+            });
+        }
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); return; }
+                timeLeft--;
+                document.getElementById('timer').textContent = `${String(Math.floor(timeLeft/60)).padStart(2,'0')}:${String(timeLeft%60).padStart(2,'0')}`;
+                if (timeLeft <= 60) document.getElementById('timer').classList.add('warning');
+            }, 1000);
+        }
+        function checkAnswered() {
+            let answered = 0;
+            questions.forEach(q => { if (document.getElementById(`answer${q.num}`).value) { answered++; document.getElementById(`q${q.num}`).classList.add('answered'); } else { document.getElementById(`q${q.num}`).classList.remove('answered'); } });
+            document.getElementById('progress').textContent = `Answered: ${answered} / 10`;
+        }
+        function submitTest() {
+            if (submitted) return; submitted = true; clearInterval(timerInterval);
+            let score = 0;
+            questions.forEach(q => {
+                const select = document.getElementById(`answer${q.num}`), userAnswer = select.value, correct = correctAnswers[q.num];
+                select.disabled = true;
+                const questionDiv = document.getElementById(`q${q.num}`), resultIcon = document.getElementById(`result${q.num}`), correctDiv = document.getElementById(`correct${q.num}`);
+                if (userAnswer === correct) { score++; questionDiv.classList.add('correct'); resultIcon.textContent = '✓'; resultIcon.style.color = '#27ae60'; }
+                else { questionDiv.classList.add('incorrect'); resultIcon.textContent = '✗'; resultIcon.style.color = '#e74c3c'; correctDiv.textContent = `Correct: ${correct}`; }
+            });
+            document.getElementById('scoreDisplay').textContent = `${score} / 10`;
+            document.getElementById('scoreMessage').textContent = score === 10 ? 'Perfect! 🎉' : score >= 8 ? 'Excellent! 👏' : 'Keep practising! 💪';
+            document.getElementById('resultModal').style.display = 'flex';
+            document.getElementById('submitBtn').disabled = true;
+        }
+        function closeModal() { document.getElementById('resultModal').style.display = 'none'; }
+        generateQuestions(); startTimer();
+    </script>
+</body>
+</html>

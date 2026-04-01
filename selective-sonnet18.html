@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selective Poetry - Sonnet 18 | JK Coaching College</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; line-height: 1.6; }
+        .header { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 1.5rem; }
+        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo svg { height: 40px; }
+        .logo-text { font-weight: bold; font-size: 1.1rem; }
+        .timer-bar { background: #2d5a87; color: white; padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .timer { font-size: 1.5rem; font-weight: bold; background: rgba(255,255,255,0.2); padding: 5px 20px; border-radius: 5px; }
+        .timer.warning { background: #e74c3c; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .main-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; }
+        .panel { background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
+        .panel-header { background: #34495e; color: white; padding: 15px 20px; font-weight: bold; }
+        .poem-content { padding: 30px; height: calc(100vh - 250px); overflow-y: auto; }
+        .poem-title { color: #1e3a5f; font-size: 1.4rem; margin-bottom: 5px; font-weight: bold; }
+        .poem-author { color: #666; font-style: italic; margin-bottom: 25px; }
+        .poem-text { font-family: Georgia, 'Times New Roman', serif; font-size: 1.1rem; line-height: 1.9; }
+        .poem-line { display: block; margin-bottom: 4px; }
+        .poem-line.indent { margin-left: 20px; }
+        .stanza { margin-bottom: 25px; }
+        .questions-content { padding: 20px; height: calc(100vh - 250px); overflow-y: auto; }
+        .question { margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #3498db; }
+        .question.answered { border-left-color: #27ae60; }
+        .question.incorrect { border-left-color: #e74c3c; background: #fdf2f2; }
+        .question.correct { border-left-color: #27ae60; background: #f0fff4; }
+        .question-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .question-number { font-weight: bold; color: #2c3e50; min-width: 30px; }
+        .question-text { flex: 1; margin-bottom: 12px; color: #333; }
+        .options label { display: block; padding: 10px 12px; margin-bottom: 6px; background: white; border: 2px solid #e0e0e0; border-radius: 5px; cursor: pointer; transition: all 0.2s; }
+        .options label:hover { border-color: #3498db; background: #f0f7ff; }
+        .options input[type="radio"] { margin-right: 10px; }
+        .options label.correct-option { border-color: #27ae60; background: #e8f8f0; }
+        .options label.incorrect-option { border-color: #e74c3c; background: #fdf2f2; }
+        .result-icon { font-weight: bold; margin-left: 10px; }
+        .correct-answer { color: #27ae60; font-weight: bold; margin-top: 8px; font-size: 0.95rem; }
+        .button-bar { background: #ecf0f1; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .btn { padding: 12px 30px; font-size: 1rem; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+        .btn-primary { background: #3498db; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .btn:disabled { background: #bdc3c7; cursor: not-allowed; }
+        .progress-text { font-weight: bold; color: #2c3e50; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
+        .modal { background: white; padding: 40px; border-radius: 15px; text-align: center; max-width: 500px; }
+        .modal h2 { color: #2c3e50; margin-bottom: 20px; }
+        .score-display { font-size: 3rem; font-weight: bold; color: #3498db; margin: 20px 0; }
+        .modal-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 25px; }
+        @media (max-width: 1024px) { .main-container { grid-template-columns: 1fr; } .poem-content, .questions-content { height: auto; max-height: 50vh; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Selective Reading Comprehension - Poetry</h1>
+        <div class="logo">
+            <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="30" cy="30" r="28" fill="#1e3a5f" stroke="white" stroke-width="2"/>
+                <text x="30" y="35" text-anchor="middle" fill="white" font-family="Georgia, serif" font-size="16" font-weight="bold">JK</text>
+                <text x="30" y="48" text-anchor="middle" fill="white" font-family="Arial" font-size="6">COACHING</text>
+            </svg>
+            <span class="logo-text">JK Coaching College</span>
+        </div>
+    </div>
+    <div class="timer-bar">
+        <span>Time Remaining</span>
+        <div class="timer" id="timer">11:00</div>
+    </div>
+    <div class="main-container">
+        <div class="panel">
+            <div class="panel-header">Poem</div>
+            <div class="poem-content">
+                <div class="poem-title">Sonnet 18</div>
+                <div class="poem-author">by William Shakespeare</div>
+                <div class="poem-text">
+                    <div class="stanza">
+                        <span class="poem-line">Shall I compare thee to a summer's day?</span>
+                        <span class="poem-line">Thou art more lovely and more temperate:</span>
+                        <span class="poem-line">Rough winds do shake the darling buds of May,</span>
+                        <span class="poem-line">And summer's lease hath all too short a date;</span>
+                        <span class="poem-line">Sometime too hot the eye of heaven shines,</span>
+                        <span class="poem-line">And often is his gold complexion dimm'd;</span>
+                        <span class="poem-line">And every fair from fair sometime declines,</span>
+                        <span class="poem-line">By chance or nature's changing course untrimm'd;</span>
+                        <span class="poem-line">But thy eternal summer shall not fade,</span>
+                        <span class="poem-line">Nor lose possession of that fair thou ow'st;</span>
+                        <span class="poem-line">Nor shall death brag thou wand'rest in his shade,</span>
+                        <span class="poem-line">When in eternal lines to time thou grow'st:</span>
+                        <span class="poem-line indent">So long as men can breathe or eyes can see,</span>
+                        <span class="poem-line indent">So long lives this, and this gives life to thee.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-header">Questions 9–18</div>
+            <div class="questions-content" id="questionsContainer"></div>
+        </div>
+    </div>
+    <div class="button-bar">
+        <button class="btn btn-secondary" onclick="window.location.href='index.html'">← Back to Menu</button>
+        <span class="progress-text" id="progress">Answered: 0 / 10</span>
+        <button class="btn btn-success" id="submitBtn" onclick="submitTest()">Submit Answers</button>
+    </div>
+    <div class="modal-overlay" id="resultModal">
+        <div class="modal">
+            <h2>Test Complete!</h2>
+            <div class="score-display" id="scoreDisplay">0 / 10</div>
+            <p id="scoreMessage"></p>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="closeModal()">Close & Review Answers</button>
+                <button class="btn btn-secondary" onclick="window.location.href='index.html'">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const questions = [
+            { num: 9, text: "The opening question 'Shall I compare thee to a summer's day?' mainly", options: ["A) shows the speaker uncertain whether the beloved is truly as beautiful as summer", "B) introduces a comparison the poem will both make and then move beyond", "C) invites the reader to form their own view before the speaker shares theirs", "D) suggests the speaker considers summer the highest possible standard of beauty"], correct: "B" },
+            { num: 10, text: "The word 'temperate' in 'Thou art more lovely and more temperate' is mainly significant because it", options: ["A) suggests the beloved's character is calm and gentle, unlike the wildness of nature", "B) implies the beloved's beauty is quietly understated rather than showy", "C) shows the beloved is more comfortable in moderate weather than in the heat of summer", "D) sets the beloved apart from summer's extremes — both the harshness of rough winds and the excess of heat"], correct: "D" },
+            { num: 11, text: "'summer's lease hath all too short a date' mainly suggests", options: ["A) summer holds its time on temporary terms — borrowed, limited, not truly owned", "B) summer arrives and departs according to a fixed agreement it cannot alter", "C) the pleasures of summer are available to all, like something rented rather than possessed", "D) summer's beauty is governed by forces beyond the season's own control"], correct: "A" },
+            { num: 12, text: "Lines 5 to 8 develop the idea that", options: ["A) summer is unreliable — shifting between harsh and beautiful without warning", "B) the natural world operates by its own laws, indifferent to human standards of beauty", "C) no beautiful thing in nature is exempt from change, loss, or the passage of time", "D) the sun, as master of the seasons, ultimately determines when beauty appears and when it fades"], correct: "C" },
+            { num: 13, text: "The word 'But' at the start of line 9 is mainly significant because it", options: ["A) shifts from describing summer's faults to acknowledging the beloved also has limitations", "B) pivots from all the ways summer fails to the claim that the beloved escapes those failures entirely", "C) introduces the speaker's personal feelings after the objective comparison of the earlier lines", "D) marks the shift from present observation to a prediction about the beloved's future"], correct: "B" },
+            { num: 14, text: "'Nor lose possession of that fair thou ow'st' is mainly significant because", options: ["A) it promises the beloved will never grow old or lose physical beauty", "B) it shows the beloved's beauty is natural rather than dependent on favourable conditions", "C) the word 'possession' implies the beloved has earned their beauty through character", "D) 'possession' contrasts directly with summer's 'lease' — what summer borrows briefly, the beloved owns"], correct: "D" },
+            { num: 15, text: "'Nor shall death brag thou wand'rest in his shade' is mainly significant because it", options: ["A) personifies death as a boastful figure whose claim over the beloved is denied", "B) implies the beloved is too vital and bright to be touched by death's shadow", "C) presents death as a kind of court where even the most beloved must eventually appear", "D) suggests the beloved's beauty is a form of light that keeps death's darkness at a distance"], correct: "A" },
+            { num: 16, text: "'When in eternal lines to time thou grow'st' is mainly significant because it", options: ["A) suggests the beloved will become more valued as time passes and the poem is read by more people", "B) implies the beloved's qualities will be recognised and remembered by future generations", "C) identifies the poem itself as the mechanism — through its lines the beloved is made permanent", "D) shows the speaker believing the beloved's inner qualities will naturally outlast their physical beauty"], correct: "C" },
+            { num: 17, text: "In 'So long lives this, and this gives life to thee', the word 'this' mainly refers to", options: ["A) the comparison between the beloved and summer that the poem has made", "B) the love and devotion the speaker has expressed through the act of writing", "C) the moment of recognition in which the speaker sees the beloved's true worth", "D) the poem itself — the object that preserves the beloved beyond time and death"], correct: "D" },
+            { num: 18, text: "The poem as a whole mainly suggests", options: ["A) true love preserves what it values from the damage of time and nature", "B) the poem itself is the means of the beloved's immortality — outlasting summer, defeating death, granting permanent life", "C) the beloved's superiority to summer lies in steadiness rather than the intensity of their beauty", "D) by finding summer wanting, the speaker elevates the beloved above the natural world entirely"], correct: "B" }
+        ];
+        const correctAnswers = {}; questions.forEach(q => correctAnswers[q.num] = q.correct);
+        let timeLeft = 11 * 60, timerInterval, submitted = false;
+        function generateQuestions() {
+            const container = document.getElementById('questionsContainer');
+            questions.forEach(q => {
+                const div = document.createElement('div');
+                div.className = 'question'; div.id = `q${q.num}`;
+                div.innerHTML = `<div class="question-header"><span class="question-number">${q.num}</span><span class="result-icon" id="result${q.num}"></span></div><div class="question-text">${q.text}</div><div class="options" id="options${q.num}">${q.options.map((opt, i) => `<label id="label${q.num}_${String.fromCharCode(65+i)}"><input type="radio" name="q${q.num}" value="${String.fromCharCode(65+i)}" onchange="checkAnswered()"><span>${opt}</span></label>`).join('')}</div><div class="correct-answer" id="correct${q.num}"></div>`;
+                container.appendChild(div);
+            });
+        }
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); return; }
+                timeLeft--;
+                document.getElementById('timer').textContent = `${String(Math.floor(timeLeft/60)).padStart(2,'0')}:${String(timeLeft%60).padStart(2,'0')}`;
+                if (timeLeft <= 60) document.getElementById('timer').classList.add('warning');
+            }, 1000);
+        }
+        function checkAnswered() {
+            let answered = 0;
+            questions.forEach(q => { if (document.querySelector(`input[name="q${q.num}"]:checked`)) { answered++; document.getElementById(`q${q.num}`).classList.add('answered'); } else { document.getElementById(`q${q.num}`).classList.remove('answered'); } });
+            document.getElementById('progress').textContent = `Answered: ${answered} / 10`;
+        }
+        function submitTest() {
+            if (submitted) return; submitted = true; clearInterval(timerInterval);
+            let score = 0;
+            questions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.num}"]:checked`);
+                const userAnswer = selected ? selected.value : '', correct = correctAnswers[q.num];
+                const questionDiv = document.getElementById(`q${q.num}`), resultIcon = document.getElementById(`result${q.num}`), correctDiv = document.getElementById(`correct${q.num}`);
+                document.querySelectorAll(`input[name="q${q.num}"]`).forEach(input => input.disabled = true);
+                if (userAnswer === correct) { score++; questionDiv.classList.remove('answered'); questionDiv.classList.add('correct'); resultIcon.textContent = '✓ Correct'; resultIcon.style.color = '#27ae60'; document.getElementById(`label${q.num}_${correct}`).classList.add('correct-option'); }
+                else { questionDiv.classList.remove('answered'); questionDiv.classList.add('incorrect'); resultIcon.textContent = '✗ Incorrect'; resultIcon.style.color = '#e74c3c'; correctDiv.textContent = `Correct answer: ${correct}`; if (userAnswer) document.getElementById(`label${q.num}_${userAnswer}`).classList.add('incorrect-option'); document.getElementById(`label${q.num}_${correct}`).classList.add('correct-option'); }
+            });
+            document.getElementById('scoreDisplay').textContent = `${score} / 10`;
+            document.getElementById('scoreMessage').textContent = score === 10 ? 'Perfect! 🎉' : score >= 8 ? 'Excellent! 👏' : score >= 6 ? 'Good effort! 👍' : 'Keep practising! 💪';
+            document.getElementById('resultModal').style.display = 'flex';
+            document.getElementById('submitBtn').disabled = true;
+        }
+        function closeModal() { document.getElementById('resultModal').style.display = 'none'; }
+        generateQuestions(); startTimer();
+    </script>
+</body>
+</html>

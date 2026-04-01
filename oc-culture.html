@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OC Reading Test - Culture</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .header {
+            background: #002855;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .timer { font-size: 24px; font-weight: bold; }
+        .question-num { font-size: 20px; font-weight: bold; }
+        .main-container {
+            max-width: 1400px;
+            margin: 20px auto;
+            background: white;
+            min-height: calc(100vh - 160px);
+            display: flex;
+        }
+        .left-panel {
+            width: 55%;
+            padding: 20px;
+            border-right: 2px solid #ddd;
+            overflow-y: auto;
+            max-height: calc(100vh - 160px);
+        }
+        .instructions {
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #002855;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .tab {
+            padding: 12px 30px;
+            background: #e0e0e0;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab.active { background: #4A90E2; color: white; }
+        .extract-content {
+            display: none;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 5px;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        .extract-content.active { display: block; }
+        .extract-content p { margin-bottom: 15px; }
+        .right-panel {
+            width: 45%;
+            padding: 20px;
+            background: #f9f9f9;
+            overflow-y: auto;
+            max-height: calc(100vh - 160px);
+        }
+        .questions-header {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .question-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 5px;
+            border: 2px solid #e0e0e0;
+        }
+        .question-item.correct { border-color: #28a745; background: #f0fdf4; }
+        .question-item.incorrect { border-color: #dc3545; background: #fef2f2; }
+        .question-text {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #333;
+            line-height: 1.5;
+        }
+        .dropdown {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .dropdown.correct-answer { border-color: #28a745; background: #d4edda; }
+        .dropdown.wrong-answer { border-color: #dc3545; background: #f8d7da; }
+        .feedback {
+            margin-top: 8px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            display: none;
+        }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #d4edda; color: #155724; }
+        .feedback.incorrect { background: #f8d7da; color: #721c24; }
+        .bottom-bar {
+            background: #002855;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+        .nav-btn, .submit-btn {
+            background: white;
+            color: #002855;
+            border: none;
+            padding: 12px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .submit-btn { background: #28a745; color: white; }
+        .submit-btn:disabled { background: #adb5bd; cursor: not-allowed; }
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .results-modal.show { display: flex; }
+        .results-content {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 500px;
+        }
+        .score-display {
+            font-size: 64px;
+            font-weight: bold;
+            color: #002855;
+            margin: 20px 0;
+        }
+        .close-btn {
+            background: #002855;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .review-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            margin-right: 10px;
+        }
+        .correct-answer-text {
+            font-weight: bold;
+            color: #155724;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="timer" id="timer">11:00</div>
+        <div class="question-num">Questions 18-25</div>
+        <svg width="150" height="35" viewBox="0 0 300 70">
+            <path d="M 10 5 L 30 5 L 30 40 Q 30 52 20 52 Q 10 52 10 40 Z" fill="white"/>
+            <text x="13" y="38" font-family="Arial" font-size="28" font-weight="bold" fill="#002855">JK</text>
+            <text x="45" y="30" font-family="Arial" font-size="20" font-weight="bold" fill="white">JK COACHING</text>
+            <text x="45" y="50" font-family="Arial" font-size="20" font-weight="bold" fill="white">COLLEGE</text>
+        </svg>
+    </div>
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="instructions">
+                <strong>Read the four extracts below on the theme of culture. For questions 18–25, choose the option (A, B, C or D) which you think best answers the question.</strong>
+            </div>
+            <div class="tabs">
+                <button class="tab active" onclick="showExtract(0)">Extract A</button>
+                <button class="tab" onclick="showExtract(1)">Extract B</button>
+                <button class="tab" onclick="showExtract(2)">Extract C</button>
+                <button class="tab" onclick="showExtract(3)">Extract D</button>
+            </div>
+            <div class="extract-content active" id="extract0">
+                <h3>Extract A</h3>
+                <p>The routes that connected China to the Mediterranean world for more than a millennium were used, primarily, to move goods. Silk travelled west; glassware, wool, and gold travelled east. What was not planned, and what no merchant set out to carry, was everything else that made the journey with them: religions, musical instruments, agricultural techniques, epidemic diseases, and the accumulated small habits of peoples who had had no previous knowledge of each other's existence. The Silk Road was not a cultural exchange programme. It was a commercial network that produced cultural exchange as a by-product, on a scale and at a speed that no one involved could have predicted or, in many cases, welcomed.</p>
+                <p>The traces left by this unplanned contact are legible across an enormous range of human activity. Buddhism reached Central Asia and eventually China not through deliberate missionary effort but through the movement of traders who happened to carry it. The lute, in its various forms, spread westward from Central Asia into Persia and eventually into medieval Europe, where it became foundational to the music of the Renaissance. Paper, printing, and the compass — technologies that would eventually reshape European civilisation — moved along the same routes. Merchants who completed the journey often returned home speaking new languages and carrying new ideas, not because they had gone looking for them, but because sustained proximity to difference tends, over time, to produce change in people whether they invite it or not.</p>
+            </div>
+            <div class="extract-content" id="extract1">
+                <h3>Extract B</h3>
+                <p>My grandmother's village was smaller than I had been told, and older, and the streets did not go where I had arranged them in my head. I had been hearing about this place my entire life, in a language I speak imperfectly, through the memories of people for whom it was not a memory but a wound that had healed badly. I had arrived expecting to recognise it. I did not recognise it. I recognised something else.</p>
+                <p>On the second day I watched my grandmother move around her kitchen and found myself doing things with my hands I had not known I knew how to do — folding dough in a particular way, holding a knife at a particular angle — things I must have absorbed somewhere without noticing, the way you absorb a word you have heard many times before you know what it means. The village outside the window was not mine. The kitchen, in some way I could not account for, partly was.</p>
+                <p>I had come expecting to understand something about where I was from. I left less certain about what 'from' means, and less certain that the uncertainty was a problem.</p>
+            </div>
+            <div class="extract-content" id="extract2">
+                <h3>Extract C</h3>
+                <p>The assumption that human perception is a direct and universal window onto reality has been progressively complicated by research across psychology, anthropology, and neuroscience since the mid-twentieth century. The process by which a person's cultural environment shapes their perceptual habits, expectations, and default interpretations of experience is now referred to in the literature as 'enculturation': the ongoing, largely unconscious absorption of the frameworks through which a given community makes sense of the world. These frameworks are not merely social conventions; they produce measurable differences in what people notice, how they categorise what they see, and which features of a scene they attend to and which they discard.</p>
+                <p>Cross-cultural psychologists use the term 'perceptual set' to describe the readiness of a perceiver to interpret incoming information in a particular way — a readiness shaped by prior experience, expectation, and cultural context. Research comparing East Asian and Western participants on tasks involving figure-ground perception, for example, has documented systematic differences in the tendency to focus on central objects versus contextual relationships, differences that persist across varied experimental conditions and that researchers attribute to what they call 'cultural frame:' the background assumptions about how the world is organised that a given cultural environment instils. These findings do not suggest that perception is arbitrary or culturally constructed in any simple sense; they suggest, more modestly, that what a person is prepared to see shapes, in measurable ways, what they actually see.</p>
+            </div>
+            <div class="extract-content" id="extract3">
+                <h3>Extract D</h3>
+                <p>In many Aboriginal Australian traditions, culture is not primarily an object to be preserved or a body of content to be transmitted. It is a practice: something that exists only in the doing of it. A ceremony does not represent a relationship to Country; it enacts and renews that relationship. A song does not describe the landscape; it participates in its ongoing existence. The knowledge held within these practices is not separable from the act of performing them — it cannot be fully extracted, written down, and stored, because what matters is not the information but the continuity of its enactment by people who stand in a particular relationship to it. To cease practising is not merely to lose a tradition; it is to break a form of knowing that has no equivalent in written record.</p>
+                <p>This understanding places particular weight on the role of those who carry the responsibility of practice across generations. Knowledge is transmitted not through instruction alone but through shared participation — through being present when something is done, doing it alongside those who know how, and eventually becoming the person through whom others learn. The relationship between the knowledge-holder and the learner is not simply educational; it is itself a cultural act, embedded in obligations of care and reciprocity that extend to Country and community as well as to the individual being taught. What passes between them is not merely information but a form of presence in the world — a way of being somewhere rather than simply knowing something about it.</p>
+            </div>
+        </div>
+        <div class="right-panel">
+            <div class="questions-header">Which extract...</div>
+            <div class="question-item" data-question="18" data-answer="C">
+                <div class="question-text">18. describes how a person's background can shape the way they see the world?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+            <div class="question-item" data-question="19" data-answer="B">
+                <div class="question-text">19. presents a writer who encountered a version of themselves they had not expected to find?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+            <div class="question-item" data-question="20" data-answer="A">
+                <div class="question-text">20. suggests that exchange between distant peoples left traces that neither group had anticipated?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+            <div class="question-item" data-question="21" data-answer="B">
+                <div class="question-text">21. presents an aspect of belonging through an unexpected comparison?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+            <div class="question-item" data-question="22" data-answer="D">
+                <div class="question-text">22. describes a group for whom the continuation of a practice is itself a form of knowledge?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+            <div class="question-item" data-question="23" data-answer="C">
+                <div class="question-text">23. uses vocabulary specific to those who study how surroundings shape human thought?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+            <div class="question-item" data-question="24" data-answer="A">
+                <div class="question-text">24. gives evidence that contact between groups produced changes that neither had sought?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+            <div class="question-item" data-question="25" data-answer="B">
+                <div class="question-text">25. describes a writer who found something familiar in a place that had seemed entirely foreign?</div>
+                <select class="dropdown">
+                    <option value="">Select...</option>
+                    <option value="A">Extract A</option>
+                    <option value="B">Extract B</option>
+                    <option value="C">Extract C</option>
+                    <option value="D">Extract D</option>
+                </select>
+                <div class="feedback"></div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-bar">
+        <button class="nav-btn" onclick="goBack()">Back</button>
+        <button class="submit-btn" id="submitBtn" onclick="submitTest()">Submit Answers</button>
+        <button class="nav-btn">Next</button>
+    </div>
+    <div class="results-modal" id="resultsModal">
+        <div class="results-content">
+            <h2>Test Complete!</h2>
+            <div class="score-display" id="scoreDisplay"></div>
+            <p id="scoreMessage"></p>
+            <button class="review-btn" onclick="closeModal()">Close & Review Answers</button>
+            <button class="close-btn" onclick="goBack()">Return to Main Menu</button>
+        </div>
+    </div>
+    <script>
+        const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+        let selectedAnswers = {};
+        let submitted = false;
+        let timerInterval;
+        const studentName = sessionStorage.getItem('studentName') || 'Unknown';
+
+        function startTimer() {
+            let minutes = 11;
+            let seconds = 0;
+            timerInterval = setInterval(() => {
+                if (seconds === 0) {
+                    if (minutes === 0) {
+                        clearInterval(timerInterval);
+                        alert('Time is up!');
+                        submitTest();
+                        return;
+                    }
+                    minutes--;
+                    seconds = 59;
+                } else {
+                    seconds--;
+                }
+                document.getElementById('timer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function showExtract(index) {
+            document.querySelectorAll('.extract-content').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('extract' + index).classList.add('active');
+            document.querySelectorAll('.tab')[index].classList.add('active');
+        }
+
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            dropdown.addEventListener('change', function() {
+                if (submitted) return;
+                const questionItem = this.closest('.question-item');
+                const questionNum = questionItem.dataset.question;
+                if (this.value) selectedAnswers[questionNum] = this.value;
+                if (Object.keys(selectedAnswers).length === 8) {
+                    document.getElementById('submitBtn').disabled = false;
+                }
+            });
+        });
+
+        async function submitTest() {
+            if (Object.keys(selectedAnswers).length !== 8) {
+                alert('Please answer all questions before submitting.');
+                return;
+            }
+            if (!confirm('Are you sure you want to submit?')) return;
+            clearInterval(timerInterval);
+            submitted = true;
+            let correctCount = 0;
+            document.querySelectorAll('.question-item').forEach(item => {
+                const questionNum = item.dataset.question;
+                const correctAnswer = item.dataset.answer;
+                const userAnswer = selectedAnswers[questionNum];
+                const dropdown = item.querySelector('.dropdown');
+                const feedback = item.querySelector('.feedback');
+                dropdown.disabled = true;
+                if (userAnswer === correctAnswer) {
+                    correctCount++;
+                    item.classList.add('correct');
+                    dropdown.classList.add('correct-answer');
+                    feedback.textContent = '✓ Correct';
+                    feedback.classList.add('correct', 'show');
+                } else {
+                    item.classList.add('incorrect');
+                    dropdown.classList.add('wrong-answer');
+                    feedback.innerHTML = '✗ Incorrect <span class="correct-answer-text">→ Correct: ' + correctAnswer + '</span>';
+                    feedback.classList.add('incorrect', 'show');
+                }
+            });
+            document.getElementById('submitBtn').disabled = true;
+            const submissionData = {
+                timestamp: new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney' }),
+                studentName: studentName,
+                testType: 'OC',
+                testName: 'Culture',
+                score: correctCount,
+                totalQuestions: 8,
+                percentage: Math.round((correctCount / 8) * 100)
+            };
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(submissionData)
+                });
+            } catch (error) { console.error('Error:', error); }
+            document.getElementById('scoreDisplay').textContent = `${correctCount}/8`;
+            document.getElementById('scoreMessage').textContent = `You scored ${Math.round((correctCount/8)*100)}%`;
+            document.getElementById('resultsModal').classList.add('show');
+        }
+
+        function goBack() { window.location.href = 'index.html'; }
+        function closeModal() { document.getElementById('resultsModal').classList.remove('show'); }
+        document.getElementById('submitBtn').disabled = true;
+        startTimer();
+    </script>
+</body>
+</html>
