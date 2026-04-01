@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OC Gap Fill - Bees | JK Coaching College</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; line-height: 1.6; }
+        .header { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 1.5rem; }
+        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo svg { height: 40px; }
+        .logo-text { font-weight: bold; font-size: 1.1rem; }
+        .timer-bar { background: #2d5a87; color: white; padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .timer { font-size: 1.5rem; font-weight: bold; background: rgba(255,255,255,0.2); padding: 5px 20px; border-radius: 5px; }
+        .timer.warning { background: #e74c3c; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .main-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; }
+        .panel { background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
+        .panel-header { background: #34495e; color: white; padding: 15px 20px; font-weight: bold; }
+        .passage-content { padding: 25px; height: calc(100vh - 250px); overflow-y: auto; font-size: 0.95rem; }
+        .passage-content h2 { color: #1e3a5f; margin-bottom: 20px; font-size: 1.3rem; }
+        .passage-content p { margin-bottom: 15px; text-align: justify; }
+        .gap { display: inline; font-weight: bold; color: #2980b9; }
+        .gap-number { background: #3498db; color: white; padding: 2px 8px; border-radius: 3px; font-size: 0.85rem; margin-right: 5px; }
+        
+        .right-content { padding: 20px; height: calc(100vh - 250px); overflow-y: auto; }
+        .sentences-box { background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+        .sentences-box h3 { color: #495057; margin-bottom: 12px; font-size: 0.95rem; }
+        .sentence-option { display: flex; margin-bottom: 10px; padding: 8px 10px; background: white; border-radius: 5px; border: 1px solid #dee2e6; font-size: 0.85rem; }
+        .sentence-letter { font-weight: bold; color: #2980b9; min-width: 25px; }
+        
+        .questions-section h3 { color: #1e3a5f; margin-bottom: 15px; font-size: 1rem; }
+        .question { margin-bottom: 15px; padding: 12px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #3498db; }
+        .question.answered { border-left-color: #27ae60; }
+        .question.incorrect { border-left-color: #e74c3c; background: #fdf2f2; }
+        .question.correct { border-left-color: #27ae60; background: #f0fff4; }
+        .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .question-number { font-weight: bold; color: #2c3e50; }
+        .question select { width: 100%; padding: 10px; font-size: 1rem; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; }
+        .question select:focus { border-color: #3498db; outline: none; }
+        .question select:disabled { background: #f5f5f5; cursor: not-allowed; }
+        .result-icon { font-size: 1rem; margin-left: 10px; }
+        .correct-answer { color: #27ae60; font-weight: bold; margin-top: 8px; font-size: 0.9rem; }
+        
+        .button-bar { background: #ecf0f1; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .btn { padding: 12px 30px; font-size: 1rem; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+        .btn-primary { background: #3498db; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .btn:disabled { background: #bdc3c7; cursor: not-allowed; }
+        .progress-text { font-weight: bold; color: #2c3e50; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
+        .modal { background: white; padding: 40px; border-radius: 15px; text-align: center; max-width: 500px; }
+        .modal h2 { color: #2c3e50; margin-bottom: 20px; }
+        .score-display { font-size: 3rem; font-weight: bold; color: #3498db; margin: 20px 0; }
+        .modal-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 25px; }
+        @media (max-width: 1024px) { .main-container { grid-template-columns: 1fr; } .passage-content, .right-content { height: auto; max-height: 50vh; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>OC Reading Comprehension - Gap Fill</h1>
+        <div class="logo">
+            <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="30" cy="30" r="28" fill="#1e3a5f" stroke="white" stroke-width="2"/>
+                <text x="30" y="35" text-anchor="middle" fill="white" font-family="Georgia, serif" font-size="16" font-weight="bold">JK</text>
+                <text x="30" y="48" text-anchor="middle" fill="white" font-family="Arial" font-size="6">COACHING</text>
+            </svg>
+            <span class="logo-text">JK Coaching College</span>
+        </div>
+    </div>
+    
+    <div class="timer-bar">
+        <span>Time Remaining</span>
+        <div class="timer" id="timer">08:00</div>
+    </div>
+    
+    <div class="main-container">
+        <!-- LEFT: Passage only -->
+        <div class="panel">
+            <div class="panel-header">Reading Passage</div>
+            <div class="passage-content">
+                <h2>The Language of Bees</h2>
+                
+                <p>When a honeybee returns to its hive having found a rich source of nectar, it does not simply resume its place among the thousands of others clustered on the comb. Instead, it dances. The movements it performs — precise, repeatable, and apparently understood by its fellow workers — contain information about where the food is, how far away it lies, and how worth the journey it is. For decades, scientists refused to believe it.</p>
+                
+                <p>The scientist who first decoded the bee's dance was an Austrian zoologist named Karl von Frisch. In the 1920s, while observing bees in his laboratory in Munich, von Frisch noticed that forager bees returning from a food source performed a distinctive figure-of-eight movement on the surface of the honeycomb. <span class="gap"><span class="gap-number">12</span> .....................</span> Over the following decades, he devoted himself to decoding what the dance was communicating. By the time he published his conclusions in 1946, he had identified a system of extraordinary complexity — one that would eventually earn him the Nobel Prize.</p>
+                
+                <p><span class="gap"><span class="gap-number">13</span> .....................</span> Critics argued that a creature with a brain smaller than a sesame seed could not possibly encode and decode information of this kind. Von Frisch's supporters countered that the evidence was too consistent and too detailed to be dismissed. The debate continued for nearly two decades after his findings were first published. The waggle dance itself, meanwhile, had been described in precise detail. The dance appeared at first glance to be a simple, repetitive motion, consisting of a straight waggle run followed by a curved return loop to the starting point. <span class="gap"><span class="gap-number">14</span> .....................</span> The duration of the waggle run indicates distance from the hive, measured not in metres but in units of time: a run lasting one second signals a food source approximately one kilometre away.</p>
+                
+                <p>The dispute might have continued indefinitely had it not been for a new generation of researchers willing to test von Frisch's claims under controlled conditions. Sceptics continued to insist that bees were simply following familiar scents left by returning foragers, rather than reading any information from the dance itself. The debate grew sharp enough to attract attention beyond the scientific community. <span class="gap"><span class="gap-number">15</span> .....................</span> In a series of carefully designed trials, researchers trained bees to visit food sources at precisely measured distances and in specific directions, then released naïve bees — those with no previous knowledge of the location — and observed whether they flew to the correct site. In study after study, they did.</p>
+                
+                <p>Across more than five decades of research since the controversy was resolved, the findings have revealed a system of considerably greater sophistication than even von Frisch had imagined. <span class="gap"><span class="gap-number">16</span> .....................</span> One colony, studied by Dr Mandyam Srinivasan at the Australian National University, was found to use a waggle run duration approximately fifteen per cent shorter than European colonies signalling an equivalent distance — a difference consistent enough to suggest that bees in different regions have, over generations, calibrated their dance to local conditions. The researchers noted that this finding was among the most unexpected of the study. <span class="gap"><span class="gap-number">17</span> .....................</span></p>
+                
+                <p>The bee, it now seems, does not simply react to its environment. It describes that environment to others, in a language specific enough to convey compass bearing, distance, and relative value. Whether this constitutes language in any meaningful sense remains a question scientists continue to debate. The bees, for their part, appear indifferent to the controversy.</p>
+            </div>
+        </div>
+        
+        <!-- RIGHT: Options A-G + Questions -->
+        <div class="panel">
+            <div class="panel-header">Sentences A–G & Questions</div>
+            <div class="right-content">
+                <div class="sentences-box">
+                    <h3>Choose from sentences A–G (one is extra):</h3>
+                    <div class="sentence-option"><span class="sentence-letter">A</span> Even so, the idea that any animal could communicate something as abstract as direction and distance through movement alone seemed, to many, deeply implausible.</div>
+                    <div class="sentence-option"><span class="sentence-letter">B</span> Individual hives observed across different locations showed markedly different timings in the waggle run, suggesting that the dance language, like human speech, may vary in subtle ways between communities.</div>
+                    <div class="sentence-option"><span class="sentence-letter">C</span> This controversy was eventually resolved not by argument but by experiment.</div>
+                    <div class="sentence-option"><span class="sentence-letter">D</span> He had not set out to study communication at all; his original intention had been to investigate whether bees could distinguish colours, and the dance had drawn his attention almost by accident.</div>
+                    <div class="sentence-option"><span class="sentence-letter">E</span> As well as this, bees have been shown to perform a simpler 'round dance' when a food source is very close to the hive, suggesting that different movements serve different communicative purposes.</div>
+                    <div class="sentence-option"><span class="sentence-letter">F</span> Not only had von Frisch's work overturned centuries of assumptions about the limits of insect cognition, it had also opened an entirely new field of inquiry into the nature of animal communication.</div>
+                    <div class="sentence-option"><span class="sentence-letter">G</span> Yet the information encoded in a single dance is remarkably precise: the angle of the waggle run relative to vertical corresponds exactly to the angle of the food source relative to the sun.</div>
+                </div>
+                
+                <div class="questions-section">
+                    <h3>Select the correct sentence for each gap:</h3>
+                    <div class="question" id="q12">
+                        <div class="question-header">
+                            <span class="question-number">Gap 12</span>
+                            <span class="result-icon" id="result12"></span>
+                        </div>
+                        <select id="answer12" onchange="checkAnswered()">
+                            <option value="">Select...</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="G">G</option>
+                        </select>
+                        <div class="correct-answer" id="correct12"></div>
+                    </div>
+                    
+                    <div class="question" id="q13">
+                        <div class="question-header">
+                            <span class="question-number">Gap 13</span>
+                            <span class="result-icon" id="result13"></span>
+                        </div>
+                        <select id="answer13" onchange="checkAnswered()">
+                            <option value="">Select...</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="G">G</option>
+                        </select>
+                        <div class="correct-answer" id="correct13"></div>
+                    </div>
+                    
+                    <div class="question" id="q14">
+                        <div class="question-header">
+                            <span class="question-number">Gap 14</span>
+                            <span class="result-icon" id="result14"></span>
+                        </div>
+                        <select id="answer14" onchange="checkAnswered()">
+                            <option value="">Select...</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="G">G</option>
+                        </select>
+                        <div class="correct-answer" id="correct14"></div>
+                    </div>
+                    
+                    <div class="question" id="q15">
+                        <div class="question-header">
+                            <span class="question-number">Gap 15</span>
+                            <span class="result-icon" id="result15"></span>
+                        </div>
+                        <select id="answer15" onchange="checkAnswered()">
+                            <option value="">Select...</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="G">G</option>
+                        </select>
+                        <div class="correct-answer" id="correct15"></div>
+                    </div>
+                    
+                    <div class="question" id="q16">
+                        <div class="question-header">
+                            <span class="question-number">Gap 16</span>
+                            <span class="result-icon" id="result16"></span>
+                        </div>
+                        <select id="answer16" onchange="checkAnswered()">
+                            <option value="">Select...</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="G">G</option>
+                        </select>
+                        <div class="correct-answer" id="correct16"></div>
+                    </div>
+                    
+                    <div class="question" id="q17">
+                        <div class="question-header">
+                            <span class="question-number">Gap 17</span>
+                            <span class="result-icon" id="result17"></span>
+                        </div>
+                        <select id="answer17" onchange="checkAnswered()">
+                            <option value="">Select...</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="G">G</option>
+                        </select>
+                        <div class="correct-answer" id="correct17"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="button-bar">
+        <button class="btn btn-secondary" onclick="window.location.href='index.html'">← Back to Menu</button>
+        <span class="progress-text" id="progress">Answered: 0 / 6</span>
+        <button class="btn btn-success" id="submitBtn" onclick="submitTest()">Submit Answers</button>
+    </div>
+    
+    <div class="modal-overlay" id="resultModal">
+        <div class="modal">
+            <h2>Test Complete!</h2>
+            <div class="score-display" id="scoreDisplay">0 / 6</div>
+            <p id="scoreMessage"></p>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="closeModal()">Close & Review Answers</button>
+                <button class="btn btn-secondary" onclick="window.location.href='index.html'">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const correctAnswers = { 12: 'D', 13: 'A', 14: 'G', 15: 'C', 16: 'B', 17: 'F' };
+        let timeLeft = 8 * 60, timerInterval, submitted = false;
+        
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); return; }
+                timeLeft--;
+                document.getElementById('timer').textContent = 
+                    `${String(Math.floor(timeLeft/60)).padStart(2,'0')}:${String(timeLeft%60).padStart(2,'0')}`;
+                if (timeLeft <= 60) document.getElementById('timer').classList.add('warning');
+            }, 1000);
+        }
+        
+        function checkAnswered() {
+            let answered = 0;
+            for (let i = 12; i <= 17; i++) {
+                if (document.getElementById(`answer${i}`).value) {
+                    answered++;
+                    document.getElementById(`q${i}`).classList.add('answered');
+                } else {
+                    document.getElementById(`q${i}`).classList.remove('answered');
+                }
+            }
+            document.getElementById('progress').textContent = `Answered: ${answered} / 6`;
+        }
+        
+        function submitTest() {
+            if (submitted) return;
+            submitted = true;
+            clearInterval(timerInterval);
+            let score = 0;
+            
+            for (let i = 12; i <= 17; i++) {
+                const select = document.getElementById(`answer${i}`);
+                const userAnswer = select.value;
+                const correct = correctAnswers[i];
+                const questionDiv = document.getElementById(`q${i}`);
+                const resultIcon = document.getElementById(`result${i}`);
+                const correctDiv = document.getElementById(`correct${i}`);
+                
+                select.disabled = true;
+                
+                if (userAnswer === correct) {
+                    score++;
+                    questionDiv.classList.remove('answered');
+                    questionDiv.classList.add('correct');
+                    resultIcon.textContent = '✓ Correct';
+                    resultIcon.style.color = '#27ae60';
+                } else {
+                    questionDiv.classList.remove('answered');
+                    questionDiv.classList.add('incorrect');
+                    resultIcon.textContent = '✗ Incorrect';
+                    resultIcon.style.color = '#e74c3c';
+                    correctDiv.textContent = `Correct: ${correct}`;
+                }
+            }
+            
+            document.getElementById('scoreDisplay').textContent = `${score} / 6`;
+            let message = score === 6 ? 'Perfect score! Excellent! 🎉' :
+                          score >= 5 ? 'Great job! 👏' :
+                          score >= 4 ? 'Good effort! 👍' :
+                          score >= 3 ? 'Keep practising! 📚' :
+                          'Review the passage carefully. 💪';
+            document.getElementById('scoreMessage').textContent = message;
+            document.getElementById('resultModal').style.display = 'flex';
+            document.getElementById('submitBtn').disabled = true;
+        }
+        
+        function closeModal() { document.getElementById('resultModal').style.display = 'none'; }
+        startTimer();
+    </script>
+</body>
+</html>
